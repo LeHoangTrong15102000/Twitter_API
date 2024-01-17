@@ -3,6 +3,15 @@ import { loginController, registerController } from '~/controllers/users.control
 import { loginValidator, registerValidator } from '~/middlewares/users.middlewares'
 const usersRouter = Router()
 
+// Khi mà luồng code chạy thì nó sẽ chạy qua các handler này trước
+
+// Params đầu tiên sẽ là cái path, params thứ 2 -> 9 là cái handler(được gọi là Request Handler) này đóng vai trò như là một middleware vậy
+/**
+ * Description. Login a user
+ * Path: /login
+ * Method: POST
+ * Body: { email: string, password: string }
+ */
 usersRouter.post('/login', loginValidator, loginController)
 /**
  * Description. Register a new user

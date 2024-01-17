@@ -2,7 +2,6 @@ import { MongoClient, Db, Collection } from 'mongodb'
 import { config } from 'dotenv'
 import User from '~/models/schemas/User.schema'
 
-
 config() // lấy thằng config() để có thể sử dụng được thằng env
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.jzb6290.mongodb.net/?retryWrites=true&w=majority`
 
