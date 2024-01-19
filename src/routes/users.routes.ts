@@ -19,6 +19,6 @@ usersRouter.post('/login', loginValidator, loginController)
  * Method: POST
  * Body: { name: string, email: string, password: string, confirm_password: string, date_of_birth: ISO8601 }
  */
-usersRouter.post('/register', registerController)
+usersRouter.post('/register', registerValidator, registerController)
 
 export default usersRouter
