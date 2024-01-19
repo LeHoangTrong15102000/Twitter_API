@@ -28,6 +28,22 @@
 
 ## Chức năng Authentication
 
+### Routing trong expressJS
+
+- Khi mà `res.status(400).send("Not Allowed")` thì đoạn code phía bên dưới vẫn chạy mặc dù là nó không trả về kết quả cho phía `client` mà thôi -> Khi mà chúng ta đã `next()` tới những cái `logic` tiếp theo thì đoạn code phía dưới `next()` vẫn chạy nhưng mà nó không có tác dụng gì hết
+
+### Cấu trúc dự án - cách đặt tên và chia thư mục
+
+- Những cái mà liên quan đến gọi và xử lý trong database thì đưa hết vào trong cái service này -> `Controller` nó sẽ gọi đến `Service` và `Service` nó sẽ xử lý database gì đấy và trả về cho `Controller`
+
+- Phía client gửi lên dạng `JSON` nên chúng ta cần `parse` nó sang dạng `Object` thì chúng ta mới có thể xử lý được
+
+- Mô hình trong này gần như là sử dụng `80% mô hình thực tế` mà chúng ta áp dụng trong lúc đi làm rồi đấy -> Nên là cứ tự tin học rồi đi phỏng vấn không có gì phải lăn tăn cả -> Tập trung học thì chúng ta sẽ học được rất là nhiều thứ
+
+### Kết nối MongoDB Atlas bằng MongoDB Driver
+
+- Có rât nhiều thư viện để validate cho dữ liệu ở phía BE của chúng ta ví dụ như: Joi, Zod, Jup, ... là ba thằng phổ biến nhất -> Nhưng trong dự án chúng ta chỉ cần sử dụng `express-validator` là đủ để `validate` dữ liệu
+
 ## Kỹ thuật dùng Postman
 
 ## Chức năng User

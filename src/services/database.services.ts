@@ -1,4 +1,4 @@
-import { MongoClient, Db, Collection } from 'mongodb'
+import { MongoClient, Db, Collection, ServerApiVersion } from 'mongodb'
 import { config } from 'dotenv'
 import User from '~/models/schemas/User.schema'
 
@@ -9,7 +9,13 @@ class DatabaseService {
   private client: MongoClient
   private db: Db
   constructor() {
-    this.client = new MongoClient(uri)
+    this.client = new MongoClient(uri, {
+      serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true
+      }
+    })
     this.db = this.client.db(process.env.DB_NAME)
   }
 
@@ -22,6 +28,10 @@ class DatabaseService {
       console.log('Error', error)
       throw error
     }
+  }
+
+  async disconnect() {
+    await this.client.close()
   }
 
   get users(): Collection<User> {
