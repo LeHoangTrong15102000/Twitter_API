@@ -120,11 +120,39 @@
 
   - Thì cái thằng `expiresIn` nó sử dụng tiêu chuẩn của thằng `vercel/ms`
 
-> Sử dụng jwt để sign token và sử dụng bất đồng bộ để tối ưu performance thay vì sử dụng đồng bộ để sign access_token rồi mới tới sign refresh_token thay vào đó thì sign access_token và refresh_token cùng một lúc.
+> Sử dụng jwt để sign token và sử dụng bất đồng bộ để tối ưu performance thay vì sử dụng đồng bộ để sign access_token rồi mới tới sign refresh_token(vì cái callback nó khá khó để handle với việc sign access_token và refresh_token) thay vào đó thì sign access_token và refresh_token cùng một lúc.
 
 ### Error handle trong Express.js
 
+- `Error handle` là tính năng rất là quan trọng trong bất kì cái framework nào -> Giúp chúng ta xử lý lỗi trong ứng dụng
+
+- Người dùng nhập liệu sai thì chúng ta trả về lỗi, server vì lí do nào đấy mà nó bị lỗi thì chúng ta cũng phải trả về lỗi
+
+- Cái Typescript chỉ có nhiệm vụ là biên dịch code mà thôi chứ nó không có check lỗi `khi built` nữa -> Nên là thêm `-T` vào trong source `nodemon.json` để mà tắt cái lỗi đi khi mà `built code` -> Tắt chế độ check lỗi -> `ts-node` ngoài biên dịch TS nó còn kiểm tra kiểu dữ liệu nữa -> Nên muốn nó chỉ biên dịch thôi không muốn nó kiểm tra kiễu dữ liệu thì thêm `-T` vào hoặc có thể là `--transpileOnly`
+
+- Nếu là `error handler` thì phải khai báo đủ 4 tham số là `err req res next` nếu khai báo thiếu một tham số thì nó sẽ tưởng đó là `request handler` -> Nên là phải rất là cẩn thận
+
+- Nếu mà async callback mà khi có lỗi chúng ta không `next(err)` cho nó thì khi đó nó sẽ bị `crash app` -> Nên là khi sử dụng `async callback` dù thế nào đi nữa thì cũng phải `next(err)` cho nó, sử dung thêm `try-catch` để bắt lỗi cho nó nên là khi vào `catch` thì phải `next(err)` cho nó
+
 ### Tạo wrapRequestHandler để xử lý lỗi
+
+- xử lý lỗi tập trung -> Khi mà có lỗi từ phía controller thì chúng ta sẽ đẩy lỗi về phía `lỗi tập trung` để xử lý -> Thì những cái lỗi nên chuyền về `error handler` để nó tập trung nó xử lý lỗi
+
+- Khai báo `error handler` `middleware` để xử lý lỗi cho cả cái `app` của chúng ta luôn
+
+- Không lẽ bây giờ thằng `Controller` nào chúng ta cũng `try catch` nó hết -> Nên là chúng ta sẽ tạo thêm một `hàm` bọc bên ngoài để lo việc `try-catch` cho thằng `Controller` và xử lý `lỗi` tập trung
+
+- Khi gọi thằng `wrapRequestHandler` thì nó vẫn trả về cho chúng ta một `RequestHandler`
+
+- `Promise.resolve(func(req, res, next)).catch(next)` -> khi mà cái funtion bên trong nó bị lỗi thì chúng ta không quan trọng nó lỗi `promise.reject` hay là lỗi function bình thường -> Chỉ cần bên trng `func` thì cái `Promise` đó nó sẽ `reject` cho chúng ta -> Mà `reject` thì nó sẽ nhảy vào cái `catch` -> nhảy vào `catch()` rồi thì chúng ta sẽ `next()` nó tới cái xử lý lỗi trung tâm
+
+  - Nhưng mà nếu dùng `Promise.resolve(func(req,res, next)).catch(next)` thì cái `func` phải là `async func` thì khi có lỗi thì nó sẽ nhảy vào lỗi cho chúng ta -> Còn nếu là `func` bình thường thì khi có lỗi nó sẽ không ra lỗi mà còn `crash` cả ứng dụng
+
+  - Vậy là chúng ta không thể `throw` một cái `error` trong `Promise.resolve()` được -> Nên là chúng ta sẽ sử dụng `try-catch` để bắt lỗi
+
+  - Sử dụng `try-catch` toàn năng hơn cho cả `function thường` và `async function`, còn cách `Promise.resolve(func(req, res, next)).catch(next)` chỉ dùng cho `func async` mà thôi
+
+- Lỗi sử lý tập trung nó vẫn chưa tối ưu lắm -> Nên là qua các bài sau chúng ta sẽ tối ưu dần
 
 ### Chuẩn hoá bộ xử lý lỗi
 

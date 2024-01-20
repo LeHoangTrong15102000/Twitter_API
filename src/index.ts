@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import exitHook from 'async-exit-hook'
 
 import usersRouter from '~/routes/users.routes'
@@ -9,6 +9,10 @@ app.use(express.json()) // Nó sẽ biến JSON thành một cái object cho ch�
 app.use('/users', usersRouter)
 
 databaseService.connect()
+
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  res.status(400).json({ error: err.message })
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

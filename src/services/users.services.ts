@@ -33,6 +33,22 @@ class UsersService {
     })
   }
 
+  private signEmailVerifyToken() {
+    // Todo
+  }
+
+  private signForgotPasswordToken() {
+    // Todo
+  }
+
+  private signAccessAndRefreshToken() {
+    // Todo
+  }
+
+  private decodeRefreshToken() {
+    // Todo
+  }
+
   async register(payload: RegisterReqBody) {
     // const { email, password } = payload
     const result = await databaseService.users.insertOne(
@@ -67,11 +83,49 @@ class UsersService {
     return Boolean(user)
   }
 
+  // getOauth
+
   async logout() {
     // Todo
   }
 
   async verifyEmail() {
+    // Todo
+  }
+
+  async resendVerifyEmail() {
+    // Todo
+  }
+
+  async forgotPassword() {
+    // Todo
+  }
+
+  async resetPassword() {
+    // Todo
+  }
+
+  async getMe() {
+    // Todo
+  }
+
+  async getProfile() {
+    // Todo
+  }
+
+  async updateMe() {
+    // Todo
+  }
+
+  async follow() {
+    // Todo
+  }
+
+  async unfollow() {
+    // Todo
+  }
+
+  async changePassword() {
     // Todo
   }
 
