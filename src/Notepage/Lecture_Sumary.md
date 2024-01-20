@@ -84,6 +84,8 @@
 
 ### Kiểm tra email có tồn tại hay
 
+- Kiểm tra xem email đã tồn tại hay chưa
+
 ### Tạo Access Token và Refresh Token
 
 ### Error handle trong Express.js

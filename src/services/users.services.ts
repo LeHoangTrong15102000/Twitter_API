@@ -13,6 +13,29 @@ class UsersService {
     )
     return result
   }
+
+  async refreshToken() {
+    // Todo
+  }
+
+  async login() {
+    // Todo
+  }
+
+  async checkEmailExist(email: string) {
+    const user = await databaseService.users.findOne({ email })
+    return Boolean(user)
+  }
+
+  async logout() {
+    // Todo
+  }
+
+  async verifyEmail() {
+    // Todo
+  }
+
+  // Em vẫn xin như ngày đầu vẫn xinh như ngày mà ta xa nhau
 }
 
 // Phải tạo ra như này thì mới lấy được cái method trong class
