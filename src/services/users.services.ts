@@ -1,17 +1,57 @@
+import { envConfig } from '~/constants/config'
+import { TokenType } from '~/constants/enum'
+import { RegisterReqBody } from '~/models/requests/User.requests'
 import User from '~/models/schemas/User.schema'
 import databaseService from '~/services/database.services'
+import { hashPassword } from '~/utils/crypto'
+import { signToken } from '~/utils/jwt'
 
 class UsersService {
-  async register(payload: { email: string; password: string }) {
-    const { email, password } = payload
+  private signAccessToken(user_id: string) {
+    return signToken({
+      payload: {
+        user_id,
+        token_type: TokenType.AccessToken
+      },
+      privateKey: envConfig.jwtSecretAccessToken,
+      options: {
+        expiresIn: envConfig.accessTokenExpiresIn
+      }
+    })
+  }
+
+  private signRefreshToken(user_id: string) {
+    return signToken({
+      payload: {
+        user_id,
+        token_type: TokenType.RefreshToken
+      },
+      privateKey: envConfig.jwtSecretRefreshToken,
+      options: {
+        expiresIn: envConfig.refreshTokenExpiresIn
+      }
+    })
+  }
+
+  async register(payload: RegisterReqBody) {
+    // const { email, password } = payload
     const result = await databaseService.users.insertOne(
       // Chỗ này khi mà chúng ta truyền vào(khởi tạo một user) thì cái kiểu dữ liệu của nó là UserType
       new User({
-        email,
-        password
+        ...payload,
+        date_of_birth: new Date(payload.date_of_birth),
+        password: hashPassword(payload.password)
       })
     )
-    return result
+    const user_id = result.insertedId.toString() // convert lại kiểu string
+    const [access_token, refresh_token] = await Promise.all([
+      this.signAccessToken(user_id),
+      this.signRefreshToken(user_id)
+    ])
+    return {
+      access_token,
+      refresh_token
+    }
   }
 
   async refreshToken() {
