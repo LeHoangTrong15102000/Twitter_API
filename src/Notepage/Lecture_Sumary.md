@@ -156,7 +156,72 @@
 
 ### Chuẩn hoá bộ xử lý lỗi
 
-### Khai báo Mesage Validation
+- Thiết kế hệ thống xử lý lỗi cho nó tường minh và rõ ràng hơn
+
+- Trong cái `checkSchema` có một vài trường hợp là chúng ta sẽ cho ra lỗi `422` là lỗi `validate` có một vài trường hợp thì sẽ không ra lỗi `422` ví dụ chúng ta kiểm tra token của người ta -> Người ta gửi `token invalid` lên thì chúng ta sẽ trả về lỗi `401`
+
+- Thông thường khi mà kiểm tra lỗi `validate` thì trả về `422` là đúng rồi -> Nhưng mà khi chúng ta tìm không ra cái `email`(hoặc là cái email đăng kí đã tồn tại rồi) của `user` thì làm thế nào để nó nhận biết được và trả về lỗi `401`
+
+- Thì cái thằng error.mapped nó trả về một cái `object` thì chúng ta sẽ lập qua cái object đó -> Nếu như mà cái message nào có cái status nó khác với `422` thì sẽ cho trả về cái `error` có `msg` là một object như sau `{message: "Email already exists", status: 401}` -> Còn bình thường thì sẽ cho trả về cái `error` là `422`
+
+- Thì để xử lý lỗi tốt thì chúng ta cần phải thống nhất cách xử lý lỗi với người dùng -> Cần có cái format xử lý lỗi chuẩn chỉnh
+
+  - Ví dụ như lỗi thông thường thì chúng ta chỉ cần trả về
+
+    - ```ts
+      message: string
+      error_info?: any // thông tin lỗi  đó nếu có
+      ```
+
+  - Còn với lỗi 422 thì sẽ có format như sau:
+
+    - ```ts
+      message: string
+      error: {
+        [field: string]: {
+          msg: string,
+          location: string,
+          value: any
+        }
+      }
+      ```
+
+  - `msg` chỉ nên là `string` không nên là một cái `object` như sau:
+
+    - msg: {
+      'message': 'Email already exits',
+      'status': 401
+      }
+      -> Không nên là một cái object như thế này
+
+  - Thì format lỗi như này thì khá là chuẩn rồi
+
+- Để mà thiết kế cho chuẩn thì chúng ta sẽ tạo một cái `class` -> Để mỗi lần `throw` một object `error` thì nó sẽ chuẩn hơn.
+
+- Bình thường khi mà tạo một cái ErrorWithStatus thì sẽ cho nó kế thừa `stackTrace`(lỗi tại dòng nào) của `Error` nhưng ở đây chúng ta sẽ không kế thừa -> Chút nữa chúng ta sẽ biết lí do vì sao
+
+- Nếu mà chúng ta `ErrorWithStatus extends Error` thì thằng `express-validator` nó thấy chúng ta throw một cái `object` mà thz này `extends` từ `Error object` thì nó chỉ nhận mỗi `message` của cái `object` này thôi, còn cái `status` nó sẽ bỏ đi để thu ngọn lại cái `object` -> Thì đó là lí do chúng ta không `extends Error` mặc định của trình duyệt, dùng thì nó sẽ hay hơn nhưng mà khi dùng thì nó sẽ vướn thằng `express-validator`
+
+- Tất cả `Error` thì chúng ta sẽ đưa `Default Error Handler` trả về
+
+- Chúng ta mong muốn là khi có lỗi trả về thì mong muốn có một cái `object Error` có chứa `status` bên trong để mà chúng tá biết đường `response` cái `status` về cho người dùng
+
+- Chúng ta sẽ xây dựng `middlewares Error` chuẩn chỉnh để trả về cho người dùng -> Phần này cũng hơi khó một tí, nhưng mà cố gắng thì vẫn có thể học
+
+- Chúng ta muốn `EntityError` nó có một khuôn mẫu nhất định thì chúng ta cần phải định nghĩa cho nó -> để khi mà nó trả ra lỗi thì nó sẽ chính xác hơn
+
+  - `location`: là nó nằm trong cái thành phần nào gửi lên API , nằm trong `body` hay nằm ở `query`.
+  - `path`: là để tham chiếu rằng là nó đang ở cái field nào
+
+- Chúng ta không phải lúc nào cũng cố định có `location` và `value` được
+
+- bởi vì cái `nestedErrors` ở trong `AlternativeValidator` nó có kiểu là `FieldValidatorError[]` thì kiểu gì thì kiểu nó cũng sẽ có cái `value`
+
+- Ở người dùng người ta chỉ cần lấy ra cái `[field: string]` và cái `msg: lỗi` mà thôi
+
+### Khai báo Message Validation
+
+- Khai báo một Message Validation
 
 ### Xử lý logic Login
 
