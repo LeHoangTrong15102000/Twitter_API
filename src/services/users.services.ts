@@ -1,5 +1,5 @@
 import { envConfig } from '~/constants/config'
-import { TokenType } from '~/constants/enum'
+import { TokenType, UserVerifyStatus } from '~/constants/enum'
 import { RegisterReqBody } from '~/models/requests/User.requests'
 import User from '~/models/schemas/User.schema'
 import databaseService from '~/services/database.services'
@@ -41,8 +41,8 @@ class UsersService {
     // Todo
   }
 
-  private signAccessAndRefreshToken() {
-    // Todo
+  private signAccessAndRefreshToken(user_id: string) {
+    return Promise.all([this.signAccessToken(user_id), this.signRefreshToken(user_id)])
   }
 
   private decodeRefreshToken() {
@@ -60,10 +60,17 @@ class UsersService {
       })
     )
     const user_id = result.insertedId.toString() // convert lại kiểu string
-    const [access_token, refresh_token] = await Promise.all([
-      this.signAccessToken(user_id),
-      this.signRefreshToken(user_id)
-    ])
+    const [access_token, refresh_token] = await this.signAccessAndRefreshToken(user_id)
+
+    return {
+      access_token,
+      refresh_token
+    }
+  }
+
+  async login(user_id: string) {
+    // Todo
+    const [access_token, refresh_token] = await this.signAccessAndRefreshToken(user_id)
     return {
       access_token,
       refresh_token
@@ -74,16 +81,23 @@ class UsersService {
     // Todo
   }
 
-  async login() {
-    // Todo
-  }
-
   async checkEmailExist(email: string) {
     const user = await databaseService.users.findOne({ email })
     return Boolean(user)
   }
 
   // getOauth
+  private async getOauthGoogleToken() {
+    // Todo
+  }
+
+  private async getGoogleUserInfo() {
+    // Todo
+  }
+
+  async oauth() {
+    // Todo
+  }
 
   async logout() {
     // Todo

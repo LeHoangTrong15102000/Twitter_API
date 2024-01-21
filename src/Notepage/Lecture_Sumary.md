@@ -223,7 +223,45 @@
 
 - Khai báo một Message Validation
 
+- Cái `Error` trả về lúc nào cũng là `Invalid Value` -> Chúng ta mong muốn là cái `Error Message` nó tường mình hơn
+
+- Nên trả về cái message cho giá trị trong body từ client gửi lên để khi có lỗi thì nó sẽ show ra lỗi cho chúng ta để chúng ta có thể fix được lỗi
+
 ### Xử lý logic Login
+
+- Xử lý logic cho phần `login` -> Logic khá hay nên là phải tập trung nhiều hơn
+
+- Ở đây có một cái mẹo là không cần phải `check` `notEmpty` ở thằng `email` vì khi người dùng không truyền `email` lên thì nó vẫn chạy vào cái `isEmail` -> Một cái mẹo nhỏ có thể xoá được cái `prop` `notEmpty` một cách an toàn -> Để lại thì nó sẽ chặt chẽ cái `validate` hơn
+
+- Trước khi đăng nhập thì chúng ta phải kiểm tra xem `email` và `password` có tồn tại trong cơ sở dữ liệu hay không
+
+- Login thì chúng ta cần tạo `access_token` và `refresh_token` -> Mà tạo 2 thằng này thì chúng ta cần phải có `user_id` -> Chúng ta có thể lấy được cái `user_id` bằng cách `users.findOne({email: value})` khi mà người dùng nhập email vào
+
+- Cái `checkIsMailExist` chúng ta đã `findOne` một lần rồi mà qua `logic login` chúng ta lại find thêm lần nữa -> Nó làm cho cái `Response` của chúng ta nó bị lâu đi -> Nó sẽ làm giảm `performance` ứng dụng của chúng ta
+
+- Mình sẽ chuyền cái `user` từ `users.middlewares` qua bên hàm login của `users.services` bằng cách nào -> Thì bằng cách sử dụng `req` ở hai bên -> ở `users.middlewares` thì chúng ta sẽ `req.user = user`
+
+- Và khi có lỗi 500 vẫn chưa có `message` lỗi gì cả, vì khi có lỗi thì phải trả lỗi về cho người dùng có lẫn `message` -> Nên ở đây cái hệ thống xử lý lỗi của chúng ta nó vẫn chưa có ổn -> Nên là chúng ta sẽ custom lại cái lỗi này sao cho `chuẩn chỉnh` nhất dể có thể `handle` hết các lỗi trả về cho phía `Client`
+
+- Cái `Error` của chúng ta chính là cái `error object` chúng ta thấy nó có dầy đủ cái `stack trace`(thông tin lỗi) -> Nó không trả về cho chúng ta khi mà chúng ta `clg` cái `err` ra là do cái `object error` này nó hơi `đặc biệt` một xíu -> Mặc dù cái `error` chúng ta gửi về có cái `stack trace và message` nhưng mà khi chúng ta `JSON.stringify(err)` thì nó trả về cái `object` rỗng
+
+- `Object.getOwnPropertyDescriptor(err, 'message')` thì nó sẽ cho ra cái thông tin `message` ở bên trong cái `object error` -> thì thằng này nó có một thuộc tính là `enumerable` nó sẽ quyết định là cái `message` nó sẽ xuất hiện không khi mà chúng ta sử dụng `JSON.stringify` hay không -> Kiểu như này như là thông tin của một cái thuộc tính của một `object` -> Nó có một số thuộc tính của cái `object` như `configurable`, `enumerable`, `writable` -> `Enumerable` thì có dùng cái `Object.keys(err)` thì nó cũng sẽ không xuất hiện cái `message lỗi` - muốn cho nó xuất hiện `message lỗi` thì phải set cái `enumerable: true`
+
+  - Có thể defineProperty để lấy set giá trị cho `enumerable` là `true`
+
+- Nếu không phải là `ErrorWithStatus` thì nó là lỗi do `SERVER` -> Và Chúng ta vẫn muốn lỗi do `server` vẫn có một cái `message`
+
+  - Vì cái `err` ở trong `errorInfo` nó trả về cho chúng ta một cái `object rỗng` nên là chúng ta sẽ phải xử lý nó ở đây để nó trả về cho chúng ta một cái `object` có giá trị
+
+- Đầu tiên làm sao để biết được cái thằng `error trong đefaultError` có bao nhiêu cái thuộc tính`(ban đầu thì cái enumerable là false nên là chúng ta không thể lặp qua object Error được)` thì có thể dùng `getOwnPropertyNames()` để lấy ra cái `keys` của `error` cho dù có `enumerable: false` thì vẫn `lấy ra được` cái `key` của `error` và để dưới dạng là một `array - key[]`
+
+  - Mặc dù là môi trường trình duyệt `chrome` và môi trường `Nodejs` nhưng mà đây là `tiêu chuẩn javascript` nên là 2 thằng vẫn giống như nhau
+
+  - Môi trường `dev` thì có thể để `stack trace` nhưng trên môi trường `production` thì nó nhạy cảm quá -> Nên là chúng ta có thể xoá cái `stack trace` đó đi
+
+- Để mở rộng kiểu dữ liệu của thằng `express` thì chúng ta khai báo nó bên trong file `type.d.ts`
+
+  - `user?: User` bởi vì đâu phải lúc nào cái `Request` của chúng ta nó cũng có `User` đâu nên là chúng ta `overwrite` `user: User` như vậy thì nó không đúng nữa nên là phải thêm `? optional` vào
 
 ### Cập nhật logic Login và config env
 
