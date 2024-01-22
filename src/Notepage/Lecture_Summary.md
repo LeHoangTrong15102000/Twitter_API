@@ -265,20 +265,10 @@
 
 ### Cập nhật logic Login và config env
 
+- Cập nhật lại `logic` cho thằng `login` và `register` là thêm `refresh_token` vào database mỗi khi thực hiện `request` thành công
+
 ### Access Token middleware cho Logout
 
 ### Refresh Token middleware và Logout logic
 
-## Kỹ thuật dùng Postman
-
-## Chức năng User
-
-## OAuth 2.0
-
-## Xử lý Media
-
-## Tối ưu hiệu suất MongoDB
-
-## Chức năng Tweet
-
-## Chức năng Search nâng cao
+### Xử lý route /users/refresh-token

@@ -2,6 +2,7 @@ import { MongoClient, Db, Collection, ServerApiVersion } from 'mongodb'
 import { config } from 'dotenv'
 import User from '~/models/schemas/User.schema'
 import { envConfig } from '~/constants/config'
+import RefreshToken from '~/models/schemas/RefreshToken.schema'
 
 config() // lấy thằng config() để có thể sử dụng được thằng env
 const uri = `mongodb+srv://${envConfig.dbUsername}:${envConfig.dbPassword}@cluster0.jzb6290.mongodb.net/?retryWrites=true&w=majority`
@@ -37,6 +38,10 @@ class DatabaseService {
 
   get users(): Collection<User> {
     return this.db.collection(envConfig.dbUsersCollection)
+  }
+
+  get refreshTokens(): Collection<RefreshToken> {
+    return this.db.collection(envConfig.dbRefreshTokensCollection)
   }
 }
 
