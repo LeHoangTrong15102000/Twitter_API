@@ -27,7 +27,7 @@ export const verifyToken = ({ token, secretOrPublicKey }: { token: string; secre
   return new Promise<TokenPayload>((resolve, reject) => {
     jwt.verify(token, secretOrPublicKey, (error, decoded) => {
       if (error) {
-        throw reject(error)
+        throw reject(error) // Nếu mà có lỗi thì throw reject cho nó ngưng luôn tại chỗ này
       }
       resolve(decoded as TokenPayload)
     })

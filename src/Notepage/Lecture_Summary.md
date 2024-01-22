@@ -267,8 +267,44 @@
 
 - Cập nhật lại `logic` cho thằng `login` và `register` là thêm `refresh_token` vào database mỗi khi thực hiện `request` thành công
 
-### Access Token middleware cho Logout
+### Access Token middleware cho Logout logic
+
+- Thì ở cái phần `logout` này chúng ta sẽ sử dụng method là `POST` để thực hiện cho việc logout của người dùng
+
+- Nếu chúng ta dùng method `GET` thì người dùng có thể điền một cái URL `đăng xuất` thế thì rất là vô lý vì chúng ta muốn khi mà người dùng nhấn vào cái `button` thì chúng ta mới cho họ `logout` ra khỏi ứng dụng -> Với lại là khi đăng xuất thì chúng ta mong muốn ng dùng còn gửi lên cho mình là `refresh_token`(để kiểm tra) nữa -> Nên là dùng method `POST` là hợp lý nhất rồi
+
+- Yêu cầu người dùng gửi lên cho `server` có `header: Authorization: Bearer access_token` và { body: refresh_token }
+
+  - Tại sao lại gửi lên `access_token` làm gì -> Thì là chúng ta chỉ muốn `user_A` thì chỉ mỗi `user_A` logout ra được thôi
+  - Còn gửi lên cái `refresh_token` bởi vì chúng ta lưu cái `refresh_token` khi mà chúng ta login hoặc register -> Nên khi là `logout` chúng ta sẽ xóa cái `refresh_token` đấy ở trong `database` đi để cho cái `refresh_token` nó sẽ không còn hiệu lực
+
+- Validate access_token
+
+  - Coi nó có gửi lên access_token trong headers hay không
+  - Verify để xem nó có đúng định dạng và nó đã hết hạn hay chưa
+
+  - Sau khi mà verify các kiểu thì nó sẽ trả về cho chúng ta một cái `decoded_authorization` có nghĩa là `JSON` của thằng `payload` thì chúng ta sẽ lưu cái JSON đấy vào trong `req` -> Thì lưu cái `req` này để khi sau này cần biết được là `user` gửi cái `request` này là ai -> Thì chúng ta sẽ lấy ra được từ thằng `decoded_authorization` được `user_id`
+
+- Validate refresh_token
+
+  - Cũng tương tự như là thằng `validate access_token` cũng kiểm tra là nó có tồn tại hay không và verify xem nó có hết thời gian hay không, và kiểm tra cái nữa là nó có tồn tại ở trong database hay không
+  - Cái `access_token` thì nó là stateless nên chúng ta không có lưu vào database -> Trả về cho người dùng để người dùng tự quản lí nó
+  - Và ở bên refresh_token thì chúng ta cũng `decoded_refresh_token` -> Để sau này có việc gì thì chúng ta tiện xử lý thôi
+
+- Sau khi đã chạy qua 2 cái middlewares rồi thì chúng ta tiến hành xóa `refresh_token` trong `database` rồi sau đó trả về cho người dùng `message` `logout thành công`
+
+- Trong cái `checkSchema` thì mặc định nó sẽ check trong `query` `body` và `header` các kiểu -> Nếu chúng ta không quy định thì nó sẽ check hết tất cả thì nó có thể ảnh hưởng đến cái hiệu suất của chúng ta -> Check như thế này thì nó sẽ đỡ phải check những thằng còn lại -> Tốt cho performance hơn
+
+  - Check cái `authorization` thì viết hoa hay không viết hoa thì nó vẫn nhận
+
+- JWT nó luôn luôn trả về `JwtPayload` chứ không phải là string | object bởi vì khi mà verify nó thì nó chắc chắn lúc nào cũng trả về object `JwtPayload`
+
+- Những lỗi liên quan đến token chúng ta muốn nó trả về lỗi 401 hết luôn
 
 ### Refresh Token middleware và Logout logic
 
 ### Xử lý route /users/refresh-token
+
+### Khuya hỏi a Được là khi mà refresh_token hết hạn thì nó có tự động xóa khỏi database không
+
+### 10 tailwindcss Trick cần nên biết -> `https://www.youtube.com/watch?v=aSlK3GhRuXA`
