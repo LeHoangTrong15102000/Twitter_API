@@ -303,6 +303,10 @@
 
 ### Refresh Token middleware và Logout logic
 
+- Cái `req` của thằng checkSchema nó lấy riêng của thư viện của nó nên là nó không hiểu các trường chúng ta khai báo ở trong file `type.d.ts` -> Nên là chúng ta cần phải chỉnh lại chút nữa
+
+- Do chúng ta sử dung kiểu là `TokenPayload` -> Vì thằng `JWT` nó sử dụng kiểu `Jwt.Payload` nên là nó không hiểu là đúng rồi -> Nên chúng ta cần phải sửa lại kiểu là `TokenPayload`
+
 ### Xử lý route /users/refresh-token
 
 ### Khuya hỏi a Được là khi mà refresh_token hết hạn thì nó có tự động xóa khỏi database không

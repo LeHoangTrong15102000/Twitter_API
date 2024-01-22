@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb'
 import { envConfig } from '~/constants/config'
 import { TokenType, UserVerifyStatus } from '~/constants/enum'
+import { USERS_MESSAGES } from '~/constants/messages'
 import { RegisterReqBody } from '~/models/requests/User.requests'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
 import User from '~/models/schemas/User.schema'
@@ -126,8 +127,11 @@ class UsersService {
     // Todo
   }
 
-  async logout() {
-    // Todo
+  async logout(refresh_token: string) {
+    await databaseService.refreshTokens.deleteOne({ token: refresh_token })
+    return {
+      message: USERS_MESSAGES.LOGOUT_SUCCESS
+    }
   }
 
   async verifyEmail() {

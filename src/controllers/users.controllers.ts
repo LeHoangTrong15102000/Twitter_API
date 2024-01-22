@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { LoginReqBody, RegisterReqBody } from '~/models/requests/User.requests'
+import { LoginReqBody, LogoutReqBody, RegisterReqBody } from '~/models/requests/User.requests'
 import { ParamsDictionary } from 'express-serve-static-core'
 import User from '~/models/schemas/User.schema'
 import databaseService from '~/services/database.services'
@@ -38,8 +38,11 @@ export const registerController = async (
   })
 }
 
-export const logoutController = async () => {
-  // Todo
+export const logoutController = async (req: Request<ParamsDictionary, any, any, LogoutReqBody>, res: Response) => {
+  const { refresh_token } = req.body
+  const result = await usersService.logout(refresh_token)
+  console.log('Checkk result logout', result)
+  return res.json(result)
 }
 
 export const refreshTokenController = async (req: Request, res: Response, next: NextFunction) => {
