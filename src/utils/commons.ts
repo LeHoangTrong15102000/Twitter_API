@@ -31,7 +31,7 @@ export const verifyAccessToken = async (access_token: string, req?: Request) => 
       ;(req as Request).decoded_authorization = decoded_authorization
       return true
     }
-    // không phải lúc nào cũng có req nên phải return về decoded_authorization
+    // không phải lúc nào cũng có req(chỉ có khi xử lý các middleware liên quan) nên phải return về decoded_authorization
     return decoded_authorization
   } catch (error) {
     if (error instanceof JsonWebTokenError) {

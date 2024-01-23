@@ -309,6 +309,16 @@
 
 ### Xử lý route /users/refresh-token
 
-### Khuya hỏi a Được là khi mà refresh_token hết hạn thì nó có tự động xóa khỏi database không
+- Lấy `user_id` ra từ `decoded_refresh_token` để xác định là user nào vừa gửi `refresh_token` lên server
+
+- Khi mà người dùng chưa `verify email` thì vẫn cho phép đăng nhập
+
+- Trong khi tạo ra `new_access_token` và `new_refresh_token` đồng thời cũng xóa cái `refresh_token` trong database đi -> Rồi sau đó trả về cho người dùng access_token và refresh_token mới
+
+- Trong cái collection refreshTokens thì nó rất là n hiều `user_id` trùng nhau vì một user có thể đăng nhập ở nhiều nơi -> Nên là phải gửi lên cái `token: refresh_token`
+
+### Khuya hỏi a Được là khi mà `refresh_token` hết hạn thì nó có tự động xóa khỏi database không
 
 ### 10 tailwindcss Trick cần nên biết -> `https://www.youtube.com/watch?v=aSlK3GhRuXA`
+
+### Có setup MongoDB để tự động xóa `refresh_token` khi mà nó hết hạn

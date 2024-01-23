@@ -18,7 +18,6 @@ export const validate = (validation: RunnableValidationChains<ValidationChain>) 
     }
 
     const errorsObject = errors.mapped()
-    console.log('Check errorsObject >>>', errorsObject)
     const entityError = new EntityError({ errors: {} }) // khởi tạo objectError cho EntityError
     for (const key in errorsObject) {
       // msg là một cái object mà nó có kiểu là ErrorWithStatus
@@ -31,7 +30,6 @@ export const validate = (validation: RunnableValidationChains<ValidationChain>) 
       // Còn nếu là lỗi validate thì
       entityError.errors[key] = errorsObject[key]
     }
-    // console.log('Check entityError >>', entityError)
 
     // Nếu không thì next(entityError)
     next(entityError)
