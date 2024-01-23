@@ -10,11 +10,12 @@ import { hashPassword } from '~/utils/crypto'
 import { signToken, verifyToken } from '~/utils/jwt'
 
 class UsersService {
-  private signAccessToken(user_id: string) {
+  private signAccessToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
     return signToken({
       payload: {
         user_id,
-        token_type: TokenType.AccessToken
+        token_type: TokenType.AccessToken,
+        verify
       },
       privateKey: envConfig.jwtSecretAccessToken,
       options: {
@@ -23,11 +24,25 @@ class UsersService {
     })
   }
 
-  private signRefreshToken(user_id: string) {
+  private signRefreshToken({ user_id, verify, exp }: { user_id: string; verify: UserVerifyStatus; exp?: number }) {
+    // Khi mà /refresh-token thì mới thực hiện
+    if (exp) {
+      return signToken({
+        payload: {
+          user_id,
+          token_type: TokenType.RefreshToken,
+          verify,
+          exp
+        },
+        privateKey: envConfig.jwtSecretRefreshToken
+      })
+    }
+    // Kí một refresh_token mới
     return signToken({
       payload: {
         user_id,
-        token_type: TokenType.RefreshToken
+        token_type: TokenType.RefreshToken,
+        verify
       },
       privateKey: envConfig.jwtSecretRefreshToken,
       options: {
@@ -44,8 +59,8 @@ class UsersService {
     // Todo
   }
 
-  private signAccessAndRefreshToken(user_id: string) {
-    return Promise.all([this.signAccessToken(user_id), this.signRefreshToken(user_id)])
+  private signAccessAndRefreshToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+    return Promise.all([this.signAccessToken({ user_id, verify }), this.signRefreshToken({ user_id, verify })])
   }
 
   private decodeRefreshToken(refresh_token: string) {
@@ -66,7 +81,10 @@ class UsersService {
       })
     )
     const user_id = result.insertedId.toString() // convert lại kiểu string
-    const [access_token, refresh_token] = await this.signAccessAndRefreshToken(user_id)
+    const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
+      user_id,
+      verify: UserVerifyStatus.Unverified
+    })
 
     const { iat, exp } = await this.decodeRefreshToken(refresh_token)
     await databaseService.refreshTokens.insertOne(
@@ -85,7 +103,10 @@ class UsersService {
   }
 
   async login(user_id: string) {
-    const [access_token, refresh_token] = await this.signAccessAndRefreshToken(user_id)
+    const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
+      user_id,
+      verify: UserVerifyStatus.Unverified
+    })
 
     const { iat, exp } = await this.decodeRefreshToken(refresh_token)
 
@@ -105,8 +126,38 @@ class UsersService {
     }
   }
 
-  async refreshToken() {
-    // Todo
+  async refreshToken({
+    user_id,
+    refresh_token,
+    verify,
+    exp
+  }: {
+    user_id: string
+    refresh_token: string
+    verify: UserVerifyStatus
+    exp: number
+  }) {
+    // Việc tạo token thì nên dùng promise.all cho nó tối ưu
+    const [new_access_token, new_refresh_token] = await Promise.all([
+      this.signAccessToken({ user_id, verify }),
+      this.signRefreshToken({ user_id, verify, exp }),
+      databaseService.refreshTokens.deleteOne({ token: refresh_token })
+    ])
+    // Lấy ra exp từ new_refresh_token
+    const decoded_refresh_token = await this.decodeRefreshToken(new_refresh_token)
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({
+        user_id: new ObjectId(user_id),
+        token: new_refresh_token,
+        iat: decoded_refresh_token.iat,
+        exp: decoded_refresh_token.exp
+      })
+    )
+
+    return {
+      new_access_token,
+      new_refresh_token
+    }
   }
 
   async checkEmailExist(email: string) {

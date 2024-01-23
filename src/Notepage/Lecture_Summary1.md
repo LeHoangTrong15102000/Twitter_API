@@ -2,6 +2,8 @@
 
 ## Kỹ thuật dùng Postman
 
+- Thực hiện setup cho postman nó được tiến hành tự động
+
 ## Chức năng User
 
 ## OAuth 2.0

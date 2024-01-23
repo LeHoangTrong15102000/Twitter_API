@@ -225,7 +225,6 @@ export const refreshTokenValidator = validate(
                 }),
                 databaseService.refreshTokens.findOne({ token: value })
               ])
-              // console.log('Checkkkk >>>> Refresh Token', refresh_token)
               if (refresh_token === null) {
                 throw new ErrorWithStatus({
                   message: USERS_MESSAGES.REFRESH_TOKEN_WAS_USED_OR_NOT_EXIST,
