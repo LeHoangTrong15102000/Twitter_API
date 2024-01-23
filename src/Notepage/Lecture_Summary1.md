@@ -6,6 +6,40 @@
 
 ## Chức năng User
 
+### Verify Email
+
+### Mẹo cập nhật thời gian với $currentDate và $$NOW
+
+### Resend verify email
+
+### Forgot password
+
+### Verify forgot password token
+
+### Reset password
+
+### Get me
+
+### MongoDB Schema Validation
+
+### Code Logic VerifiedUserValidator
+
+### Code Logic updateMeValidator và updateMeController
+
+### Code filterMiddleware để lọc data body
+
+### Bàn về khuyết điểm của verifiedUserValidator
+
+### Get user profile
+
+### Follow User
+
+### Unfollow User
+
+### Fix bug unique username
+
+### Change Password
+
 ## OAuth 2.0
 
 ## Xử lý Media
