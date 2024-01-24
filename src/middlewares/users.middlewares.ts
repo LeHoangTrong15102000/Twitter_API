@@ -8,7 +8,7 @@ import { USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import databaseService from '~/services/database.services'
 import usersService from '~/services/users.services'
-import { verifyAccessToken } from '~/utils/commons'
+import { handleAuthenticationToken, verifyAccessToken } from '~/utils/commons'
 import { hashPassword } from '~/utils/crypto'
 import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validation'
@@ -190,8 +190,8 @@ export const accessTokenValidator = validate(
       Authorization: {
         custom: {
           options: async (value: string, { req }) => {
-            // .replace("Bearer ", '')
-            const access_token = (value || '').split(' ')[1]
+            // .replace("Bearer ", ''), undefined .split thì nó sẽ bị lỗi, nếu là undefined thì sẽ lấy chuỗi rỗng
+            const access_token = (value ?? '').split(' ')[1]
             return verifyAccessToken(access_token, req as Request)
           }
         }
@@ -253,9 +253,50 @@ export const refreshTokenValidator = validate(
 )
 
 export const emailVerifyTokenValidator = validate(
-  checkSchema({
-    // Todo
-  })
+  checkSchema(
+    {
+      email_verify_token: {
+        trim: true,
+        custom: {
+          options: async (value: string, { req }) => {
+            // Chỉ cần check ở đây là được, check `notEmpty` thì nó trả về 422 nhưng chúng ta mông đợi là 401
+            if (!value) {
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.EMAIL_VERIFY_TOKEN_IS_REQUIRED,
+                status: HTTP_STATUS.UNAUTHORIZED
+              })
+            }
+
+            try {
+              const decoded_email_verify_token = await verifyToken({
+                token: value,
+                secretOrPublicKey: envConfig.jwtSecretEmailVerifyToken
+              })
+              // if (email_verify_token === null) {
+              //   throw new ErrorWithStatus({
+              //     message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE,
+              //     status: HTTP_STATUS.UNAUTHORIZED
+              //   })
+              // }
+              ;(req as Request).decoded_email_verify_token = decoded_email_verify_token
+            } catch (error) {
+              if (error instanceof JsonWebTokenError) {
+                throw new ErrorWithStatus({
+                  message: capitalize((error as JsonWebTokenError).message),
+                  status: HTTP_STATUS.UNAUTHORIZED
+                })
+              }
+              // Còn không phải là lỗi của JWT thì trả về lỗi thường(có thể là RF used hoặc là do ng dùng ko truyền RF)
+              throw error
+            }
+
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
 )
 
 export const forgotPasswordValidator = validate(
