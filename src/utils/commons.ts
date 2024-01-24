@@ -43,3 +43,28 @@ export const verifyAccessToken = async (access_token: string, req?: Request) => 
     throw error
   }
 }
+
+export const handleAuthenticationToken = async (processToken: string, req?: Request) => {
+  if (!processToken) {
+    throw new ErrorWithStatus({
+      message: USERS_MESSAGES.EMAIL_VERIFY_TOKEN_IS_REQUIRED,
+      status: HTTP_STATUS.UNAUTHORIZED
+    })
+  }
+  try {
+    const decoded_email_verify_token = await verifyToken({
+      token: processToken,
+      secretOrPublicKey: envConfig.jwtSecretEmailVerifyToken
+    })
+
+    ;(req as Request).decoded_email_verify_token = decoded_email_verify_token
+  } catch (error) {
+    if (error instanceof JsonWebTokenError) {
+      throw new ErrorWithStatus({
+        message: capitalize((error as JsonWebTokenError).message),
+        status: HTTP_STATUS.UNAUTHORIZED
+      })
+    }
+    throw error
+  }
+}
