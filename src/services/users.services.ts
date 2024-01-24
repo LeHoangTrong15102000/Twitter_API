@@ -86,6 +86,10 @@ class UsersService {
       verify: UserVerifyStatus.Unverified
     })
 
+
+    // Chỗ này có thể tạo một cái `Req` là refresh_token_register để khi mà user verify rồi thì xóa cái refresh_token cũ
+    // req.refresh_token_register = refresh_token 
+
     const { iat, exp } = await this.decodeRefreshToken(refresh_token)
     await databaseService.refreshTokens.insertOne(
       new RefreshToken({
