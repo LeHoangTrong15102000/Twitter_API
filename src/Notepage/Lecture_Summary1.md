@@ -20,6 +20,12 @@
 
 - Cần `validate` `email_verify_token` xem nó có đúng định dạng hay không
 
+- Việc kiểm tra `email_verify_token` có tồn tại hay không thì nên kiểm tra ở `usersController` thì nó sẽ hợp lí hơn
+
+- Khi mà người dùng đã xác thực rồi mà nhấn vào nút xác thực email thì chúng ta vẫn gọi đến `routes` là `/users/verify-email` thì lúc này server sẽ kiểm tra rồi trả về
+
+> Xóa refresh_token chưa được xác thực khỏi database
+
 ### Mẹo cập nhật thời gian với $currentDate và $$NOW
 
 ### Resend verify email

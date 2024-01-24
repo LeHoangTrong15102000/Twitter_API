@@ -29,7 +29,9 @@ export interface ForgotPasswordReqBody {
 }
 
 export interface ChangePasswordReqBody {
+  old_password: string
   password: string
+  confirm_password: string
 }
 
 export interface TokenPayload extends JwtPayload {
@@ -38,4 +40,18 @@ export interface TokenPayload extends JwtPayload {
   verify: UserVerifyStatus
   exp: number
   iat: number
+}
+
+export interface VerifyEmailReqBody {
+  email_verify_token: string
+}
+
+export interface VerifyForgotPasswordReqBody {
+  forgot_password_token: string
+}
+
+export interface ResetPasswordReqBody {
+  password: string
+  confirm_password: string
+  forgot_password_token: string
 }
