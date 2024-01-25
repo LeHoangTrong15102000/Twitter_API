@@ -1,17 +1,34 @@
 import { Request, Response, Router } from 'express'
 import {
+  changePasswordController,
+  followController,
+  forgotPasswordController,
+  getMeController,
+  getUserProfileController,
   loginController,
   logoutController,
   refreshTokenController,
   registerController,
-  verifyEmailController
+  resendVerifyEmailController,
+  resetPasswordController,
+  unfollowController,
+  updateMeController,
+  verifyEmailController,
+  verifyForgotPasswordController
 } from '~/controllers/users.controllers'
 import {
+  verifiedUserValidator,
   accessTokenValidator,
+  changePasswordValidator,
   emailVerifyTokenValidator,
+  followValidator,
+  forgotPasswordValidator,
   loginValidator,
   refreshTokenValidator,
-  registerValidator
+  registerValidator,
+  resetPasswordValidator,
+  updateMeValidator,
+  verifyForgotPasswordTokenValidator
 } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 const usersRouter = Router()
@@ -66,7 +83,7 @@ usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(
  * Header: { Authorization: Bearer <access_token> }
  * Body: {}
  */
-usersRouter.post('/resend-verify-email')
+usersRouter.post('/resend-verify-email', accessTokenValidator, wrapRequestHandler(resendVerifyEmailController))
 
 /**
  * Description. Submit email to reset password, send email to user
@@ -74,7 +91,7 @@ usersRouter.post('/resend-verify-email')
  * Method: POST
  * Body: {email: string}
  */
-usersRouter.post('/forgot-password')
+usersRouter.post('/forgot-password', forgotPasswordValidator, wrapRequestHandler(forgotPasswordController))
 
 /**
  * Description. Verify link in email to reset password
@@ -82,7 +99,11 @@ usersRouter.post('/forgot-password')
  * Method: POST
  * Body: {forgot_password_token: string}
  */
-usersRouter.post('/verify-forgot-password')
+usersRouter.post(
+  '/verify-forgot-password',
+  verifyForgotPasswordTokenValidator,
+  wrapRequestHandler(verifyForgotPasswordController)
+)
 
 /**
  * Description: Reset password
@@ -90,7 +111,7 @@ usersRouter.post('/verify-forgot-password')
  * Method: POST
  * Body: {forgot_password_token: string, password: string, confirm_password: string}
  */
-usersRouter.post('/reset-password')
+usersRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(resetPasswordController))
 
 /**
  * Description: Get my profile
@@ -98,7 +119,7 @@ usersRouter.post('/reset-password')
  * Method: GET
  * Header: { Authorization: Bearer <access_token> }
  */
-usersRouter.get('/me')
+usersRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
 
 /**
  * Description: Update my profile
@@ -107,14 +128,20 @@ usersRouter.get('/me')
  * Header: { Authorization: Bearer <access_token> }
  * Body: UserSchema
  */
-usersRouter.patch('/me')
+usersRouter.patch(
+  '/me',
+  accessTokenValidator,
+  verifiedUserValidator,
+  updateMeValidator,
+  wrapRequestHandler(updateMeController)
+)
 
 /**
  * Description: Get user profile
  * Path: /:username
  * Method: GET
  */
-usersRouter.get('/:username')
+usersRouter.get('/:username', wrapRequestHandler(getUserProfileController))
 
 /**
  * Description: Follow someone
@@ -123,7 +150,13 @@ usersRouter.get('/:username')
  * Header: { Authorization: Bearer <access_token> }
  * Body: { followed_user_id: string }
  */
-usersRouter.post('/follow')
+usersRouter.post(
+  '/follow',
+  accessTokenValidator,
+  verifiedUserValidator,
+  followValidator,
+  wrapRequestHandler(followController)
+)
 
 /**
  * Description: unfollow someone
@@ -131,7 +164,12 @@ usersRouter.post('/follow')
  * Method: DELETE
  * Header: { Authorization: Bearer <access_token> }
  */
-usersRouter.delete('/follow/:user_id')
+usersRouter.delete(
+  '/follow/:user_id',
+  accessTokenValidator,
+  verifiedUserValidator,
+  wrapRequestHandler(unfollowController)
+)
 
 /**
  * Description: Change password
@@ -140,6 +178,12 @@ usersRouter.delete('/follow/:user_id')
  * Header: { Authorization: Bearer <access_token> }
  * Body: { old_password: string, password: string, confirm_password: string }
  */
-usersRouter.put('/change-password')
+usersRouter.put(
+  '/change-password',
+  accessTokenValidator,
+  verifiedUserValidator,
+  changePasswordValidator,
+  wrapRequestHandler(changePasswordController)
+)
 
 export default usersRouter

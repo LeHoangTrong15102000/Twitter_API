@@ -24,8 +24,7 @@
 
 - Khi mà người dùng đã xác thực rồi mà nhấn vào nút xác thực email thì chúng ta vẫn gọi đến `routes` là `/users/verify-email` thì lúc này server sẽ kiểm tra rồi trả về
 
-
-- Tại sao lại find t heo ID chứ không find theo `email_verify_token` thì cái này liên quan đến cái `index` của `MongoDB` -> Cái ID nó được index thì chúng ta find nó sẽ nhanh hơn 
+- Tại sao lại find t heo ID chứ không find theo `email_verify_token` thì cái này liên quan đến cái `index` của `MongoDB` -> Cái ID nó được index thì chúng ta find nó sẽ nhanh hơn
 
 > Xóa refresh_token chưa được xác thực khỏi database
 
@@ -43,7 +42,7 @@
 
 ### MongoDB Schema Validation
 
-### Code Logic VerifiedUserValidator
+### Code Logic verifiedUserValidator
 
 ### Code Logic updateMeValidator và updateMeController
 
