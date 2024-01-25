@@ -1,10 +1,14 @@
 import { NextFunction, Request, Response } from 'express'
 import {
+  FollowReqBody,
+  GetUserProfileReqParams,
   LoginReqBody,
   LogoutReqBody,
   RefreshTokenReqBody,
   RegisterReqBody,
   TokenPayload,
+  UnfollowReqParams,
+  UpdateMeReqBody,
   VerifyEmailReqBody
 } from '~/models/requests/User.requests'
 import { ParamsDictionary } from 'express-serve-static-core'
@@ -149,7 +153,11 @@ export const getMeController = async (req: Request, res: Response, next: NextFun
   })
 }
 
-export const getUserProfileController = async (req: Request, res: Response, next: NextFunction) => {
+export const getUserProfileController = async (
+  req: Request<GetUserProfileReqParams>,
+  res: Response,
+  next: NextFunction
+) => {
   const { username } = req.params
   const user = await usersService.getUserProfile(username)
   return res.json({
@@ -158,7 +166,11 @@ export const getUserProfileController = async (req: Request, res: Response, next
   })
 }
 
-export const updateMeController = async (req: Request, res: Response, next: NextFunction) => {
+export const updateMeController = async (
+  req: Request<ParamsDictionary, any, UpdateMeReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
   const { user_id } = req.decoded_authorization as TokenPayload
   const { body } = req
   const user = await usersService.updateMe(user_id, body)
@@ -168,12 +180,22 @@ export const updateMeController = async (req: Request, res: Response, next: Next
   })
 }
 
-export const followController = async (req: Request, res: Response, next: NextFunction) => {
-  // Todo
+export const followController = async (
+  req: Request<ParamsDictionary, any, FollowReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { followed_user_id } = req.body
+  const result = await usersService.follow(user_id, followed_user_id)
+  return res.json(result)
 }
 
-export const unfollowController = async (req: Request, res: Response, next: NextFunction) => {
-  // Todo
+export const unfollowController = async (req: Request<UnfollowReqParams>, res: Response, next: NextFunction) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { user_id: followed_user_id } = req.params
+  const result = await usersService.unfollow(user_id, followed_user_id)
+  return res.json(result)
 }
 
 export const changePasswordController = async (req: Request, res: Response, next: NextFunction) => {

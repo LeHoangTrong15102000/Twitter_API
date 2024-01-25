@@ -3,6 +3,7 @@ import { config } from 'dotenv'
 import User from '~/models/schemas/User.schema'
 import { envConfig } from '~/constants/config'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
+import Follower from '~/models/schemas/Follower.schema'
 
 config() // lấy thằng config() để có thể sử dụng được thằng env
 const uri = `mongodb+srv://${envConfig.dbUsername}:${envConfig.dbPassword}@cluster0.jzb6290.mongodb.net/?retryWrites=true&w=majority`
@@ -42,6 +43,10 @@ class DatabaseService {
 
   get refreshTokens(): Collection<RefreshToken> {
     return this.db.collection(envConfig.dbRefreshTokensCollection)
+  }
+
+  get followers(): Collection<Follower> {
+    return this.db.collection(envConfig.dbFollowersCollection)
   }
 }
 
