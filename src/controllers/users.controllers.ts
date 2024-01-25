@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import {
+  ChangePasswordReqBody,
   FollowReqBody,
   GetUserProfileReqParams,
   LoginReqBody,
@@ -54,14 +55,14 @@ export const registerController = async (
   })
 }
 
-export const logoutController = async (req: Request<ParamsDictionary, any, any, LogoutReqBody>, res: Response) => {
+export const logoutController = async (req: Request<ParamsDictionary, any, LogoutReqBody>, res: Response) => {
   const { refresh_token } = req.body
   const result = await usersService.logout(refresh_token)
   return res.json(result)
 }
 
 export const refreshTokenController = async (
-  req: Request<ParamsDictionary, any, any, RefreshTokenReqBody>,
+  req: Request<ParamsDictionary, any, RefreshTokenReqBody>,
   res: Response
 ) => {
   const { refresh_token } = req.body
@@ -75,7 +76,7 @@ export const refreshTokenController = async (
 }
 
 export const verifyEmailController = async (
-  req: Request<ParamsDictionary, any, any, VerifyEmailReqBody>,
+  req: Request<ParamsDictionary, any, VerifyEmailReqBody>,
   res: Response,
   next: NextFunction
 ) => {
@@ -198,6 +199,13 @@ export const unfollowController = async (req: Request<UnfollowReqParams>, res: R
   return res.json(result)
 }
 
-export const changePasswordController = async (req: Request, res: Response, next: NextFunction) => {
-  // Todo
+export const changePasswordController = async (
+  req: Request<ParamsDictionary, any, ChangePasswordReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { password } = req.body
+  const result = await usersService.changePassword(user_id, password)
+  return res.json(result)
 }

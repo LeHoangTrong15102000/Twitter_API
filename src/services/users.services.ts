@@ -432,11 +432,24 @@ class UsersService {
     }
   }
 
-  async changePassword() {
-    // Todo
+  async changePassword(user_id: string, new_password: string) {
+    await databaseService.users.updateOne(
+      {
+        _id: new ObjectId(user_id)
+      },
+      {
+        $set: {
+          password: hashPassword(new_password)
+        },
+        $currentDate: {
+          updated_at: true
+        }
+      }
+    )
+    return {
+      message: USERS_MESSAGES.CHANGE_PASSWORD_SUCCESS
+    }
   }
-
-  // Em vẫn xin như ngày đầu vẫn xinh như ngày mà ta xa nhau
 }
 
 // Phải tạo ra như này thì mới lấy được cái method trong class
