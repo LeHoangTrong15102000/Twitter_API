@@ -410,7 +410,26 @@ class UsersService {
   }
 
   async unfollow(user_id: string, followed_user_id: string) {
-    // Todo
+    const follower = await databaseService.followers.findOne({
+      user_id: new ObjectId(user_id),
+      followed_user_id: new ObjectId(followed_user_id)
+    })
+    // Không tìm thấy document follower
+    // nghĩa là chưa follow người này
+    if (follower === null) {
+      return {
+        message: USERS_MESSAGES.ALREADY_UNFOLLOWED
+      }
+    }
+    // Tìm thấy document follower
+    // Nghĩa là đã follow người này rồi, thì ta tiến hành xóa document này
+    await databaseService.followers.deleteOne({
+      user_id: new ObjectId(user_id),
+      followed_user_id: new ObjectId(followed_user_id)
+    })
+    return {
+      message: USERS_MESSAGES.UNFOLLOW_SUCCESS
+    }
   }
 
   async changePassword() {
