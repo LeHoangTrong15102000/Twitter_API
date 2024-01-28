@@ -20,6 +20,7 @@ import { ObjectId } from 'mongodb'
 import { USERS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { UserVerifyStatus } from '../constants/enum'
+import { envConfig } from '~/constants/config'
 
 export const loginController = async (
   req: Request<ParamsDictionary, any, LoginReqBody>,
@@ -38,7 +39,10 @@ export const loginController = async (
 }
 
 export const oauthController = async (req: Request, res: Response, next: NextFunction) => {
-  // Todo
+  const { code } = req.query
+  const result = await usersService.oauth(code as string)
+  const urlRedirect = `${envConfig.clientRedirectCallback}?access_token=${result.access_token}&refresh_token=${result.refresh_token}&new_user=${result.newUser}&verify=${result.verify}`
+  return res.redirect(urlRedirect)
 }
 
 export const registerController = async (
