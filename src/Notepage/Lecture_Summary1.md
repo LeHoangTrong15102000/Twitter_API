@@ -64,8 +64,40 @@
 
 ## Xử lý Media
 
-## Tối ưu hiệu suất MongoDB
+### Upload file bằng Formidable
 
-## Chức năng Tweet
+### Tạo folder upload
 
-## Chức năng Search nâng cao
+### Filter upload ảnh
+
+### Xử lý ảnh với Sharp
+
+### Xử lý tham số truyền từ command
+
+### Serving static file
+
+### 1 cách khác để serve static file
+
+### Upload multiple image
+
+### Upload video
+
+### Streaming video
+
+### Fix bug header Content-Range không play được video
+
+### Tìm hiểu về HLS Streaming
+
+### Encode video sang HLS
+
+### Fix lỗi encode HLS không được
+
+### Play HLS Streaming trên client
+
+### Fix bug chọn resolution.width dẫn đến convert command bị sai
+
+### Xử lý encode video bằng queue
+
+### Kiểm tra status video encode
+
+### Retro chương media
