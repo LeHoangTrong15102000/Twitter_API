@@ -13,12 +13,11 @@ class MediasService {
     const file = await handleUploadImage(req)
     const newName = getNameFromFullName(file.newFilename)
     const newPath = path.resolve(UPLOAD_DIR, `${newName}.jpg`) // Output file
-    console.log('Checkkk File', file)
     await sharp(file.filepath).jpeg().toFile(newPath) // process image file then export newPath
     fs.unlinkSync(file.filepath)
     return isProduction
-      ? `${envConfig.host}/medias/${newName}.jpg`
-      : `http://localhost:${envConfig.port}/medias/${newName}.jpg`
+      ? `${envConfig.host}/static/${newName}.jpg`
+      : `http://localhost:${envConfig.port}/static/${newName}.jpg`
   }
 
   async uploadVideo() {

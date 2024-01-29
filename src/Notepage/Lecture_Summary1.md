@@ -109,6 +109,8 @@
 
 ### Serving static file
 
+- Thực hiện phục vụ tập tin tĩnh -> Chúng ta muốn là khi mà click vào đường link thì phải show ra được tấm ảnh cho chúng ta
+
 ### 1 cách khác để serve static file
 
 ### Upload multiple image
