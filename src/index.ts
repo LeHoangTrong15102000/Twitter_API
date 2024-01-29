@@ -5,12 +5,15 @@ import usersRouter from '~/routes/users.routes'
 import databaseService from '~/services/database.services'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 import mediasRouter from './routes/medias.routes'
+import { config } from 'dotenv'
 import { initFolder } from './utils/file'
+
+config()
 
 databaseService.connect()
 
 const app = express()
-const port = 3000
+const port = process.env.PORT || 8000
 
 // Tạo folder Upload
 initFolder()

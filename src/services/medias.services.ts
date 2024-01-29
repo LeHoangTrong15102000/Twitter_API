@@ -6,6 +6,7 @@ import sharp from 'sharp'
 import { UPLOAD_DIR } from '~/constants/dir'
 import { getNameFromFullName, handleUploadImage } from '~/utils/file'
 import fs from 'fs'
+import { envConfig, isProduction } from '~/constants/config'
 
 class MediasService {
   async uploadImage(req: Request) {
@@ -15,7 +16,9 @@ class MediasService {
     console.log('Checkkk File', file)
     await sharp(file.filepath).jpeg().toFile(newPath) // process image file then export newPath
     fs.unlinkSync(file.filepath)
-    return `http://localhost:4000/uploads/${newName}.jpg`
+    return isProduction
+      ? `${envConfig.host}/medias/${newName}.jpg`
+      : `http://localhost:${envConfig.port}/medias/${newName}.jpg`
   }
 
   async uploadVideo() {
