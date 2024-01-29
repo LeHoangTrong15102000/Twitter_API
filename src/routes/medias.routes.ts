@@ -14,7 +14,7 @@ mediasRouter.post(
   '/upload-image',
   // accessTokenValidator,
   // verifiedUserValidator,
-  uploadImageController
+  wrapRequestHandler(uploadImageController)
 )
 
 mediasRouter.post(
