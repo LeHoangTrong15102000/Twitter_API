@@ -1,12 +1,12 @@
 // Điều hướng cho phần media Controller
 
 import { NextFunction, Request, Response } from 'express'
-import { handleUploadImage } from '~/utils/file'
+import mediasService from '~/services/medias.services'
 
 export const uploadImageController = async (req: Request, res: Response, next: NextFunction) => {
-  const data = await handleUploadImage(req)
+  const result = await mediasService.uploadImage(req)
   return res.json({
-    result: data
+    result
   })
 }
 

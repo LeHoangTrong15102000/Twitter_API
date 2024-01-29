@@ -3,11 +3,11 @@ import { Request, Response } from 'express'
 import { File } from 'formidable'
 import fs from 'fs'
 import path from 'path'
+import { UPLOAD_TEMP_DIR } from '~/constants/dir'
 
 export const initFolder = () => {
-  const uploadFolderPath = path.resolve('uploads')
-  if (!fs.existsSync(uploadFolderPath)) {
-    fs.mkdirSync(uploadFolderPath, {
+  if (!fs.existsSync(UPLOAD_TEMP_DIR)) {
+    fs.mkdirSync(UPLOAD_TEMP_DIR, {
       recursive: true // Mục dích là để tạo folder nested
     })
   }
@@ -16,10 +16,10 @@ export const initFolder = () => {
 export const handleUploadImage = async (req: Request) => {
   const formidable = (await import('formidable')).default
   const form = formidable({
-    uploadDir: path.resolve('uploads'),
+    uploadDir: UPLOAD_TEMP_DIR,
     maxFiles: 1,
     keepExtensions: true,
-    maxFileSize: 3000 * 1024, // 300KB
+    maxFileSize: 300 * 1024, // 300KB
     filter: function ({ name, originalFilename, mimetype }) {
       const isValid = name === 'image' && Boolean(mimetype?.includes('image/'))
       if (!isValid) {
@@ -28,7 +28,7 @@ export const handleUploadImage = async (req: Request) => {
       return isValid
     }
   })
-  return new Promise<File[]>((resolve, reject) => {
+  return new Promise<File>((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
       // thường cái thư viện xuất ra lỗi thì cái lỗi nó lúc nào cũng là một cái object cả
       if (err) {
@@ -37,10 +37,34 @@ export const handleUploadImage = async (req: Request) => {
       }
       // Do err là null nên nó vượt qua được câu if ở trên, nên cần phải xử lý lỗi giá trị gửi lên là rỗng ở đây
       // eslint-disable-next-line no-extra-boolean-cast
-      if (!Boolean(files.imagge)) {
+      if (!Boolean(files.image)) {
         return reject(new Error('File is empty'))
       }
-      resolve(files.image as File[])
+      resolve((files.image as File[])[0])
     })
   })
+}
+
+// Cách xử lý khi upload video và encode
+// Có 2 giai đoạn
+// Upload video: Upload video thành công thì resolve về cho người dùng
+// Encode video: Khai báo thêm 1 url endpoint để check xem cái video đó đã encode xong chưa
+
+export const handleUploadVideo = () => {
+  //
+}
+
+export const getNameFromFullName = (fullname: string) => {
+  const nameArr = fullname.split('.')
+  nameArr.pop()
+  return nameArr.join('')
+}
+
+export const getExtension = (fullname: string) => {
+  const nameArr = fullname.split('.')
+  return nameArr[nameArr.length - 1]
+}
+
+export const getFiles = () => {
+  //
 }

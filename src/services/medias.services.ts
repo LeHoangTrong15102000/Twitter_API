@@ -1,11 +1,33 @@
 // Medias Service
 
 import { Request } from 'express'
-import { handleUploadImage } from '~/utils/file'
+import path from 'path'
+import sharp from 'sharp'
+import { UPLOAD_DIR } from '~/constants/dir'
+import { getNameFromFullName, handleUploadImage } from '~/utils/file'
+import fs from 'fs'
 
 class MediasService {
   async uploadImage(req: Request) {
-    const files = handleUploadImage()
+    const file = await handleUploadImage(req)
+    const newName = getNameFromFullName(file.newFilename)
+    const newPath = path.resolve(UPLOAD_DIR, `${newName}.jpg`) // Output file
+    console.log('Checkkk File', file)
+    await sharp(file.filepath).jpeg().toFile(newPath) // process image file then export newPath
+    fs.unlinkSync(file.filepath)
+    return `http://localhost:4000/uploads/${newName}.jpg`
+  }
+
+  async uploadVideo() {
+    // Todo
+  }
+
+  async uploadVideoHLS() {
+    // Todo
+  }
+
+  async getVideoStatus() {
+    // Todo
   }
 }
 
