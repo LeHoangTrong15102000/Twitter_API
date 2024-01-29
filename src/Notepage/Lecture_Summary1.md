@@ -121,6 +121,12 @@
 
 ### Upload multiple image
 
+- Dùng map để Promise.all tất cả các file bên trong để tiết kiệm thời gian
+
+- Có 4 cái File đưa lên thì không nên await từng cái file mà nên dùng Promise.all
+
+- Mặc định `maxTotatFileSize` nó sẽ lấy giá trị mặc định là `maxFileSize`
+
 ### Upload video
 
 ### Streaming video

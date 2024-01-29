@@ -7,17 +7,28 @@ import { UPLOAD_DIR } from '~/constants/dir'
 import { getNameFromFullName, handleUploadImage } from '~/utils/file'
 import fs from 'fs'
 import { envConfig, isProduction } from '~/constants/config'
+import { Media } from '~/models/Other'
+import { MediaType } from '~/constants/enum'
 
 class MediasService {
   async uploadImage(req: Request) {
-    const file = await handleUploadImage(req)
-    const newName = getNameFromFullName(file.newFilename)
-    const newPath = path.resolve(UPLOAD_DIR, `${newName}.jpg`) // Output file
-    await sharp(file.filepath).jpeg().toFile(newPath) // process image file then export newPath
-    fs.unlinkSync(file.filepath)
-    return isProduction
-      ? `${envConfig.host}/static/${newName}.jpg`
-      : `http://localhost:${envConfig.port}/static/${newName}.jpg`
+    const files = await handleUploadImage(req) // Dùng promise.all rồi map nó cho tiết kiệm thời gian
+    const result: Media[] = await Promise.all(
+      files.map(async (file) => {
+        const newName = getNameFromFullName(file.newFilename)
+        const newFullFilename = `${newName}.jpg`
+        const newPath = path.resolve(UPLOAD_DIR, newFullFilename) // Output file
+        await sharp(file.filepath).jpeg().toFile(newPath) // process image file then export newPath
+        fs.unlinkSync(file.filepath)
+        return {
+          url: isProduction
+            ? `${envConfig.host}/static/image/${newName}.jpg`
+            : `http://localhost:${envConfig.port}/static/image/${newName}.jpg`,
+          type: MediaType.Image
+        }
+      })
+    )
+    return result
   }
 
   async uploadVideo() {

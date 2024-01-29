@@ -17,9 +17,10 @@ export const handleUploadImage = async (req: Request) => {
   const formidable = (await import('formidable')).default
   const form = formidable({
     uploadDir: UPLOAD_TEMP_DIR,
-    maxFiles: 1,
+    maxFiles: 4,
     keepExtensions: true,
     maxFileSize: 300 * 1024, // 300KB
+    maxTotalFileSize: 300 * 1024 * 4, // 1200KB
     filter: function ({ name, originalFilename, mimetype }) {
       const isValid = name === 'image' && Boolean(mimetype?.includes('image/'))
       if (!isValid) {
@@ -28,7 +29,7 @@ export const handleUploadImage = async (req: Request) => {
       return isValid
     }
   })
-  return new Promise<File>((resolve, reject) => {
+  return new Promise<File[]>((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
       // thường cái thư viện xuất ra lỗi thì cái lỗi nó lúc nào cũng là một cái object cả
       if (err) {
@@ -40,7 +41,7 @@ export const handleUploadImage = async (req: Request) => {
       if (!Boolean(files.image)) {
         return reject(new Error('File is empty'))
       }
-      resolve((files.image as File[])[0])
+      resolve(files.image as File[])
     })
   })
 }
