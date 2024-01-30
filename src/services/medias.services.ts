@@ -20,6 +20,7 @@ class MediasService {
         const newPath = path.resolve(UPLOAD_DIR, newFullFilename) // Output file
         await sharp(file.filepath).jpeg().toFile(newPath) // process image file then export newPath
         fs.unlinkSync(file.filepath)
+        // Đường đãn trả về phải image/ thì mới hợp lệ
         return {
           url: isProduction
             ? `${envConfig.host}/static/image/${newName}.jpg`

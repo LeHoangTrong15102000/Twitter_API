@@ -107,7 +107,7 @@ class UsersService {
         _id: user_id,
         username: `user${user_id.toString()}`,
         email_verify_token,
-        date_of_birth: new Date(payload.date_of_birth),
+        date_of_birth: new Date(payload.date_of_birth), // từ ISO8601 lưu vào database phải convert lại kiểu là Date()
         password: hashPassword(payload.password)
       })
     )
@@ -125,8 +125,9 @@ class UsersService {
         exp
       })
     )
+
+    // console.log('Checkkk email verify token >>>> ', email_verify_token)
     // Chỗ này có thể tạo một cái `Req` là refresh_token_register để khi mà user verify rồi thì xóa cái refresh_token cũ
-    // req.refresh_token_register = refresh_token
 
     return {
       access_token,
@@ -294,8 +295,8 @@ class UsersService {
   }
 
   async verifyEmail(user_id: string) {
-    // Tạo giá trị cập nhật
-    // MongoDB cập nhật giá trị
+    // Tạo giá trị cập nhật, MongoDB cập nhật giá trị
+    // 2 thằng xử lý klq nhau thì dùng Promise.all tăng performance
     const [token] = await Promise.all([
       this.signAccessAndRefreshToken({
         user_id,
@@ -336,7 +337,7 @@ class UsersService {
       user_id,
       verify: UserVerifyStatus.Unverified
     })
-    // await sendVerifyRegisterEmail
+    // await sendVerifyRegisterEmail(email, email_verify_token)
 
     // Cập nhật lại giá trị  email_verify_token trong document user
     await databaseService.users.updateOne(
@@ -439,7 +440,9 @@ class UsersService {
 
   async updateMe(user_id: string, payload: UpdateMeReqBody) {
     // Đưa vào database thì kiểu là ISO8601 còn khi lấy ra thì là kiểu Date
-    const _payload = payload.date_of_birth ? { ...payload, date_of_birth: new Date(payload.date_of_birth) } : payload
+    const _payload = payload.date_of_birth
+      ? { ...payload, verifiedUserValidator: new Date(payload.date_of_birth) }
+      : payload
     const user = await databaseService.users.findOneAndUpdate(
       {
         _id: new ObjectId(user_id)

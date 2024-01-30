@@ -40,9 +40,10 @@ export default class User {
   avatar: string // optional
   cover_photo: string // optional
 
+  // Khi mà người dùng gửi cái user_id lên thì MongoDB sẽ không tạo _id nữa
   constructor(user: UserType) {
     const date = new Date()
-    this._id = user._id
+    this._id = user._id // Nếu người dùng không truyền user_id thì MongoDB sẽ tự tạo
     this.name = user.name || ''
     this.email = user.email
     this.date_of_birth = user.date_of_birth || new Date()

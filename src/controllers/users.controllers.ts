@@ -96,8 +96,8 @@ export const verifyEmailController = async (
     })
   }
 
-  // Đã verify rồi thì sẽ không báo lỗi
-  // Mà mình sẽ trả về status OK với message là đã verify trước đó rồi
+  // Đã verify rồi thì sẽ không báo lỗi Mà mình sẽ trả về status OK với message là đã verify trước đó rồi
+  // Sau khi đã xác thực đăng kí rồi mà người dùng vẫn cố bấm xác thực nữa thì sẽ đưa ra thông báo
   if (user.email_verify_token === '') {
     return res.json({
       message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE
