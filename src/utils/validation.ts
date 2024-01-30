@@ -12,14 +12,12 @@ export const validate = (validation: RunnableValidationChains<ValidationChain>) 
     await validation.run(req)
     // Sau khi đã lấy được lỗi rồi thì sẽ đưa vào validationResult để biết thành các object lỗi
     const errors = validationResult(req)
-    console.log('Errors Original', errors)
     // Nếu mà không có lỗi thì next
     if (errors.isEmpty()) {
       return next()
     }
 
     const errorsObject = errors.mapped()
-    console.log('Errors', errors.mapped())
     const entityError = new EntityError({ errors: {} }) // khởi tạo objectError cho EntityError
     for (const key in errorsObject) {
       // msg là một cái object mà nó có kiểu là ErrorWithStatus

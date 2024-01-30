@@ -2,15 +2,18 @@ import { NextFunction, Request, Response } from 'express'
 import {
   ChangePasswordReqBody,
   FollowReqBody,
+  ForgotPasswordReqBody,
   GetUserProfileReqParams,
   LoginReqBody,
   LogoutReqBody,
   RefreshTokenReqBody,
   RegisterReqBody,
+  ResetPasswordReqBody,
   TokenPayload,
   UnfollowReqParams,
   UpdateMeReqBody,
-  VerifyEmailReqBody
+  VerifyEmailReqBody,
+  VerifyForgotPasswordReqBody
 } from '~/models/requests/User.requests'
 import { ParamsDictionary } from 'express-serve-static-core'
 import User from '~/models/schemas/User.schema'
@@ -120,7 +123,6 @@ export const resendVerifyEmailController = async (req: Request, res: Response, n
       message: USERS_MESSAGES.USER_NOT_FOUND
     })
   }
-
   if (user.verify === UserVerifyStatus.Verified) {
     return res.json({
       message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE
@@ -130,19 +132,31 @@ export const resendVerifyEmailController = async (req: Request, res: Response, n
   return res.json(result)
 }
 
-export const forgotPasswordController = async (req: Request, res: Response, next: NextFunction) => {
+export const forgotPasswordController = async (
+  req: Request<ParamsDictionary, any, ForgotPasswordReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
   const { _id, verify, email } = req.user as User
   const result = await usersService.forgotPassword({ user_id: (_id as ObjectId).toString(), verify, email })
   return res.json(result)
 }
 
-export const verifyForgotPasswordController = async (req: Request, res: Response, next: NextFunction) => {
+export const verifyForgotPasswordController = async (
+  req: Request<ParamsDictionary, any, VerifyForgotPasswordReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
   return res.json({
     message: USERS_MESSAGES.VERIFY_FORGOT_PASSWORD_SUCCESS
   })
 }
 
-export const resetPasswordController = async (req: Request, res: Response, next: NextFunction) => {
+export const resetPasswordController = async (
+  req: Request<ParamsDictionary, any, ResetPasswordReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
   const { user_id } = req.decoded_forgot_password_token as TokenPayload
   const { password } = req.body
   const result = await usersService.resetPassword(user_id, password)

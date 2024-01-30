@@ -295,7 +295,6 @@ class UsersService {
   }
 
   async verifyEmail(user_id: string) {
-    // Tạo giá trị cập nhật, MongoDB cập nhật giá trị
     // 2 thằng xử lý klq nhau thì dùng Promise.all tăng performance
     const [token] = await Promise.all([
       this.signAccessAndRefreshToken({
@@ -307,7 +306,7 @@ class UsersService {
           $set: {
             email_verify_token: '',
             verify: UserVerifyStatus.Verified,
-            updated_at: '$$NOW'
+            updated_at: '$$NOW' // thằng này cũng nằm trong chu kỳ MongoDB cập nhật giá trị
           }
         }
       ])
@@ -337,7 +336,7 @@ class UsersService {
       user_id,
       verify: UserVerifyStatus.Unverified
     })
-    // await sendVerifyRegisterEmail(email, email_verify_token)
+    // await sendVerifyRegisterEmail(email, email_verify_token) // Sẽ thực hiện gửi email ngay tại đây
 
     // Cập nhật lại giá trị  email_verify_token trong document user
     await databaseService.users.updateOne(

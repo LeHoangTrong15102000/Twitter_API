@@ -30,7 +30,19 @@
 
 ### Mẹo cập nhật thời gian với $currentDate và $$NOW
 
+- Tạo giá trị cập nhật(new Date), MongoDB cập nhật giá trị(sau thời điểm tạo giá trị cập nhật) -> Thì cái thời điểm currentDate sau thời điểm cập nhật giá trị vài trăm ms
+
+- thằng $set { updated_at: new Date} -> là do chúng ta đưa cái Date vào, còn $currentDate: { updated_at } là do MongoDB đưa cái Date vào
+
+- Còn có 1 cái options khác khi mà chúng ta không muốn dùng currentDate đó là
+
 ### Resend verify email
+
+- Chỉ cần gửi lại cho người ta một cái email với email-verify-token mới là được
+
+- Yêu cầu phải đăng nhập rồi mới được resend email
+
+- Rồi phải xem người dùng đã `verifyEmail` chưa -> Nếu đã `verifyEmail` rồi mà cứ nhấn liên tục thì không được
 
 ### Forgot password
 
