@@ -8,7 +8,7 @@ import { getNameFromFullName, handleUploadImage } from '~/utils/file'
 import fs from 'fs'
 import { envConfig, isProduction } from '~/constants/config'
 import { Media } from '~/models/Other'
-import { MediaType } from '~/constants/enum'
+import { MediaType } from '~/constants/enums'
 
 class MediasService {
   async uploadImage(req: Request) {

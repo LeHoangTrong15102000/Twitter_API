@@ -46,6 +46,8 @@
 
 ### Forgot password
 
+- Sau khi người dùng nhấn vào forgotPassword -> Thì sẽ cho người dùng nhập email rồi sau đó người dùng sẽ click vào đường dẫn thì sẽ đưa người dùng đến trang `reset-password` -> Người dùng tiến hành reset password
+
 ### Verify forgot password token
 
 ### Reset password

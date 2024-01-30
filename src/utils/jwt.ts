@@ -23,6 +23,7 @@ export const signToken = ({
   })
 }
 
+// Khi mà đưa token vào thì server nó sẽ kiểm tra có đúng secretOrPublicKey hay không -> Nếu đúng thì trả về decoded_verify_token
 export const verifyToken = ({ token, secretOrPublicKey }: { token: string; secretOrPublicKey: string }) => {
   return new Promise<TokenPayload>((resolve, reject) => {
     jwt.verify(token, secretOrPublicKey, (error, decoded) => {

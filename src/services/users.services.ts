@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { ObjectId } from 'mongodb'
 import { envConfig } from '~/constants/config'
-import { TokenType, UserVerifyStatus } from '~/constants/enum'
+import { TokenType, UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
@@ -365,17 +365,19 @@ class UsersService {
       {
         $set: {
           forgot_password_token,
-          updated_at: '$$NOW'
+          updated_at: '$$NOW' // MongoDB cập nhật giá trị
         }
       }
     ])
     // await sendForgotPasswordEmail(email, forgot_password_token)
-
+    // Gửi đường link đến email người dùng https://twitter.com/forgot-password?token=token
+    console.log('Check forgot password token >>>>', forgot_password_token)
     return {
       message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD
     }
   }
 
+  // reset xong rồi cho ng dùng đăng nhập lại
   async resetPassword(user_id: string, password: string) {
     await databaseService.users.updateOne(
       {

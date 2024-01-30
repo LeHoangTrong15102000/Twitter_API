@@ -22,7 +22,7 @@ import usersService from '~/services/users.services'
 import { ObjectId } from 'mongodb'
 import { USERS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { UserVerifyStatus } from '../constants/enum'
+import { UserVerifyStatus } from '../constants/enums'
 import { envConfig } from '~/constants/config'
 
 export const loginController = async (
@@ -142,6 +142,8 @@ export const forgotPasswordController = async (
   return res.json(result)
 }
 
+// Không nên sau khi người dùng click vào đường link rồi chúng ta xoá token -> Vì có thể người dùng chưa change password(có thể quên thì sẽ mở lại đường link đó để change password)
+// Khi nào mà người dùng change password thành công thì mới chuyển forgot_password_token thành chuỗi rỗng
 export const verifyForgotPasswordController = async (
   req: Request<ParamsDictionary, any, VerifyForgotPasswordReqBody>,
   res: Response,
@@ -152,6 +154,7 @@ export const verifyForgotPasswordController = async (
   })
 }
 
+// gửi forgot_password_token lên để xác định user_id, gửi forgot_password_token bên trong body luôn
 export const resetPasswordController = async (
   req: Request<ParamsDictionary, any, ResetPasswordReqBody>,
   res: Response,
