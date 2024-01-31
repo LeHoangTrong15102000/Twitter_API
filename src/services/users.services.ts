@@ -404,6 +404,7 @@ class UsersService {
         _id: new ObjectId(user_id)
       },
       {
+        // Khi trả về cho người dùng thì không trả về
         projection: {
           password: 0,
           email_verify_token: 0,

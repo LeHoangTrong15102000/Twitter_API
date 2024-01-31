@@ -54,6 +54,10 @@
 
 ### Get me
 
+- Người dùng chưa verify email thì chúng ta vẫn cho get Profile -> Lấy get Profile chỉ cần truyền access_token lên -> Sau khi đăng kí xong thì cho user vào trang Home luôn -> Xong rồi quăng cái thông báo `hãy kiểm tra email để xác thực email của bạn` song song đó vẫn cho người dùng gọi API `get profile` -> Sau khi xác thực xong thì thông báo cho người dùng là `xác thực email thành công`
+
+- Chỉ cần access_token của người dùng truyền lên để minh biết là người dùng này là ai thôi -> Còn lại không cần verify email
+
 ### MongoDB Schema Validation
 
 ### Code Logic verifiedUserValidator
