@@ -439,15 +439,14 @@ class UsersService {
 
   async updateMe(user_id: string, payload: UpdateMeReqBody) {
     // Đưa vào database thì kiểu là ISO8601 còn khi lấy ra thì là kiểu Date
-    const _payload = payload.date_of_birth
-      ? { ...payload, verifiedUserValidator: new Date(payload.date_of_birth) }
-      : payload
+    const _payload = payload.date_of_birth ? { ...payload, date_of_birth: new Date(payload.date_of_birth) } : payload
     const user = await databaseService.users.findOneAndUpdate(
       {
         _id: new ObjectId(user_id)
       },
       {
         $set: {
+          // _payload sẽ có kiểu là UpdateMeReqBody và thằng date_of_birth có kiểu là Date, để nói cho nó biết là date_of_birth là kiểu thứ 2(có date_of_birth?: Date)
           ...(_payload as UpdateMeReqBody & { date_of_birth?: Date })
         },
         $currentDate: {
@@ -463,7 +462,8 @@ class UsersService {
         returnDocument: 'after'
       }
     )
-    return user
+    // Mình muốn return về document thì lấy cái value ra => return user.value(lấy ra cái document mới sau khi đã cập nhật)
+    return user.value
   }
 
   async follow(user_id: string, followed_user_id: string) {

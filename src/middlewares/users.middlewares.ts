@@ -462,7 +462,7 @@ export const updateMeValidator = validate(
         isString: {
           errorMessage: USERS_MESSAGES.BIO_MUST_BE_STRING
         },
-        trim: true,
+        trim: true, // Do thằng trim nó ảnh hưởng đến validate của chúng ta nên là sẽ để nó sau khi đã check validation rồi
         isLength: {
           options: {
             min: 1,
