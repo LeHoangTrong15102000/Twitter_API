@@ -60,6 +60,28 @@
 
 ### MongoDB Schema Validation
 
+- Đã thực hiện đưa `User` và `RefreshToken` vào database rồi mà chưa có validation tầng database -> Nên là chúng ta sẽ validation tầng database
+
+- Và chúng ta cũng đã tạo một cái object cho nó đúng cái định dạng trước khi chúng ta đưa vào database -> Nhưng điều này vẫn chưa đảm bảo được nếu mà chúng ta khai báo thừa hoặc thiếu data ở Schema của mỗi Collection -> Rất là dễ xảy ra cái tình trạng mà chúng ta chèn thừa hoặc là chèn sai dữ liệu vào trong database
+
+- Thì chúng ta cũng sẽ validation luôn ở tầng `validate` thì nó cũng validate luôn thằng `mongosh`
+
+- Với những collection đã có từ trước rồi thì có thể sử dụng mongocomppass để mà addschema vào
+
+- Nếu mà thêm một collection mới mà nó không khớp với cái `validation` ở trong database thì quăng ra cái lỗi luôn
+
+- Tips for `jsonSchema validation` dùng `\_id` Field và `AdditionalProperties` thì mongoDB nó sẽ không cho phép những cái `document` nào nó không khớp những thuộc tính nằm trong `Validation schema properties`(validation) -> Đôi lúc thêm như thế này thì nó sẽ bị thừa dữ liệu -> thêm trường `AdditionalProperties` vào để chúng ta không cho thêm trường nào bên ngoài vào ngoài các trường ở ttrong `properties`
+
+- Mỗi lần khai báo thì nó sẽ tự động add vào trường `\_id` cho chúng ta, nhưng mà khi chúng ta không khai bóa nó bên trong cái `properties` thì nó sẽ bị lỗi -> Đây là một cái `tips` nhỏ trong `validaiton schema database`
+
+- Trường `Required` bên trong `validation` -> Bình thường khi mà chúng ta thêm một cái `document` vào mà khai báo thiếu một cái thuộc tính thì nó vẫn cho phép chúng ta `pass` qua -> Như thế này thì vẫn chưa chặt chẽ lắm => Nên là trong những trường hợp như thế này thì nên dùng `required`
+
+- Để bắt buộc người dùng chèn vào các trường như chúng ta mong muốn thì phải thêm `required` vào
+
+- Nếu mà validate regex ở bên trong database thì phải đòng nhất `regex` giữa server và database
+
+- Các trường trong schema `User` khi người dùng đăng ký không phải là trường nào cũng được điền -> Nhưng mà chúng ta sẽ để cho nó là một cái string rỗng nên là chúng ta sẽ `required` nó hết ở trong `database`
+
 ### Code Logic verifiedUserValidator
 
 ### Code Logic updateMeValidator và updateMeController
@@ -166,3 +188,143 @@
 ### Kiểm tra status video encode
 
 ### Retro chương media
+
+````{
+$jsonSchema: {
+bsonType: 'object',
+title: 'Refresh Token object validation',
+required: [
+'_id',
+'name',
+'email',
+'date_of_birth',
+'password',
+'created_at',
+'updated_at',
+'email_verify_token',
+'forgot_password_token',
+'verify',
+'bio',
+'location',
+'website',
+'username',
+'avatar',
+'cover_photo'
+],
+properties: {
+\_id: {
+bsonType: 'objectId',
+description: '\'\_id\' must be a ObjectId and is required'
+},
+name: {
+bsonType: 'string',
+description: '\'token\' must be a string and is required'
+},
+email: {
+bsonType: 'string',
+description: '\'user_id\' must be a ObjectId and is required'
+},
+date_of_birth: {
+bsonType: 'date',
+description: '\'date_of_birth\' must be a date and is required'
+},
+password: {
+bsonType: 'string',
+description: '\'created_at\' must be a date and is required'
+},
+created_at: {
+bsonType: 'date',
+description: '\'created_at\' must be a date and is required'
+},
+updated_at: {
+bsonType: 'date',
+description: '\'updated_at\' must be a date and is required'
+},
+email_verify_token: {
+bsonType: 'string',
+description: '\'email_verify_token\' must be a string and is required'
+},
+forgot_password_token: {
+bsonType: 'string',
+description: '\'forgot_password_token\' must be a string and is required'
+},
+verify: {
+bsonType: 'int',
+'enum': [
+0,
+1,
+2
+]
+},
+bio: {
+bsonType: 'string',
+description: '\'bio\' must be a string and is required'
+},
+location: {
+bsonType: 'string',
+description: '\'location\' must be a string and is required'
+},
+website: {
+bsonType: 'string',
+description: '\'website\' must be a string and is required'
+},
+username: {
+bsonType: 'string',
+description: '\'username\' must be a string and is required'
+},
+avatar: {
+bsonType: 'string',
+description: '\'avatar\' must be a string and is required'
+},
+cover_photo: {
+bsonType: 'string',
+description: '\'cover_photo\' must be a string and is required'
+}
+},
+additionalProperties: false
+}
+}```
+````
+
+````{
+  $jsonSchema: {
+    bsonType: 'object',
+    title: 'Refresh Token object validation',
+    required: [
+      '_id',
+      'token',
+      'user_id',
+      'created_at',
+      'iat',
+      'exp'
+    ],
+    properties: {
+      _id: {
+        bsonType: 'objectId',
+        description: '\'_id\' must be a ObjectId and is required'
+      },
+      token: {
+        bsonType: 'string',
+        description: '\'token\' must be a string and is required'
+      },
+      user_id: {
+        bsonType: 'objectId',
+        description: '\'user_id\' must be a ObjectId and is required'
+      },
+      created_at: {
+        bsonType: 'date',
+        description: '\'created_at\' must be a date and is required'
+      },
+      iat: {
+        bsonType: 'date',
+        description: '\'iat\' must be a date and is required'
+      },
+      exp: {
+        bsonType: 'date',
+        description: '\'exp\' must be a date and is required'
+      }
+    },
+    additionalProperties: false
+  }
+} ```
+````
