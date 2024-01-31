@@ -100,7 +100,22 @@
 
 ### Code filterMiddleware để lọc data body
 
+- Nếu user dùng postman hoặc là client nó xử lý bị lỗi ->Truyền lên những cái field không cần thiết như là `forgot_password_token`, `verify_email_token`
+
+- `UpdateMeValidator` thì chúng ta chỉ check những thằng có trong đó thôi còn không có thì nó sẽ không check -> nên là `forgot_password_token` -> Thì ở trong `Controller` -> khi mà check thì sẽ thấy là truyền lên `forgot_password_token` ở bên trong `body` -> Rồi nó đi sang qua `updateMeService` và cập nhật vào bên trong database thì việc này nó rất là nguy hiểm có thể coi là một `lỗ hỏng bảo mật` => Nên là chúng ta sẽ xử lý chỗ này
+
+  - Chỗ này chúng ta có thể lọc cái body bằng cách chúng ta sử dụng hàm `Pick` của thư viện `lodash`
+
 ### Bàn về khuyết điểm của verifiedUserValidator
+
+- Khi mà mình `verifiedUserValidator` thì chúng ta không phải gọi đến `database` để lấy cái `verify` để biết là thằng đó đã được `verify` hay chưa chỉ cần kiểm tra verify trong `access_token`
+
+- Người dùng người ta đăng nhập bằng máy tính và thấy thông báo chưa `verify` `tài khoản` thì người ta mở điện thoại ra để nhấn vào đường link trong gmail để verify tài khoản -> Sau khi verify tài khoản trên điện thoại rồi người ta quay lại trang web và nhấn F5 -> Và không có chuyện gì xảy ra cả(email chưa verify) vì cái `access_token đã verify` nó chưa được gửi lên cho người mà ng dùng vẫn sử dụng `access_token` chưa `verify` -> Và phải đợi access_token hết hạn thì mới trả về `access_token đã verify`
+
+- Thi người ta phải đợi khi mà access_token cũ hết hạn thì người ta mới lấy được access_token mới -> Lúc này thì ngta mới thao tác được với trang info của người ta
+  - Để fix được khuyết điểm này thì chúng ta có thể sử dụng trang thái `verify` bên trong database của user -> Nếu vậy mỗi cái `request` nào chúng ta cũng mò vào trong database để kiểm tra thì nó sẽ bị lâu, làm chậm cái `request` đó đi -> Làm như cách này thì cũng không hay
+  - Cách dùng có thể chấp nhận được ở đây là sử dụng `web socket` -> Khi mà người dùng xác thực email thành công thì chúng ta sẽ `bắn` 1 cái `sự kiện` thông báo là đã `verify email` thành công và yêu cầu người dùng thực hiện `refresh_token` lại để lấy ra `access_token` đã verify
+    -> Mặc dù cách này cũng không toàn diện nhưng cũng giải quyết được phần nào đó
 
 ### Get user profile
 

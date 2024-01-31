@@ -459,7 +459,7 @@ class UsersService {
           email_verify_token: 0,
           forgot_password_token: 0
         },
-        returnDocument: 'after'
+        returnDocument: 'after' // return về một document mới
       }
     )
     // Mình muốn return về document thì lấy cái value ra => return user.value(lấy ra cái document mới sau khi đã cập nhật)
