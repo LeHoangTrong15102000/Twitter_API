@@ -32,7 +32,7 @@ export const loginController = async (
 ) => {
   const user = req.user as User
   const user_id = user._id as ObjectId
-  const result = await usersService.login(user_id.toString())
+  const result = await usersService.login({ user_id: user_id.toString(), verify: user.verify })
   // const { access_token, refresh_token } = result
   // req.refresh_token_login = refresh_token
   return res.json({

@@ -84,6 +84,16 @@
 
 ### Code Logic verifiedUserValidator
 
+- Khi mà UpdateMe thì cái accessTokenValidator thôi là vẫn chưa đủ, vì chúng ta cần phải check nữa xem là người dùng đã `verify` rồi hay chưa -> Nếu chưa `verify` thì không cho phép người dùng vào `UpdateMe`
+
+- Thêm verify vào `payload` của cái `access_token` để khi mà người dùng updatMe thì chỉ cần kiểm tra verify trong token là được,
+
+  - Không cần phải làm cách rườm rà là lấy ra `user_id` gửi Request lên server xem là người dùng đã `verify` hay chưa, làm như cách này thì sẽ bị chậm và `tăng tải` lên database
+
+- Sẽ khai báo `verifiedUserValidator` để những tài khoản nào vượt qua được thằng này thì mới có thể vào các controller để thực hiện logic -> Cái thằng này sẽ dựa trên cái `decoded_authorization` chứ không dựa trên các trường như `body`, `query` hay `cookie` gì cả
+
+- Cái `handle error` bên express.js nó không thông minh lắm. next(error) thì dùng đâu cũng được. Còn throw error thì chỉ dùng cho sync thôi em. throw trong async thì em phải có 1 cái catch cái đó rồi next(error) sau (tương tự cách mà chúng ta dùng wrapHandler)
+
 ### Code Logic updateMeValidator và updateMeController
 
 ### Code filterMiddleware để lọc data body

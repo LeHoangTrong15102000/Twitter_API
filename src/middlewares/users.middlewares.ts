@@ -431,6 +431,7 @@ export const resetPasswordValidator = validate(
   )
 )
 
+// Có thể throw error hoặc là next(err), return để cho nó chặt chẽ hơn(không nhảy xuống thằng phía dưới)
 export const verifiedUserValidator = (req: Request, res: Response, next: NextFunction) => {
   const { verify } = req.decoded_authorization as TokenPayload
   if (verify !== UserVerifyStatus.Verified) {

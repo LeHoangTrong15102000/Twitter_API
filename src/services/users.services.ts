@@ -69,6 +69,7 @@ class UsersService {
     })
   }
 
+  // Thật ra không cần thiết phải để verify vào bên trong, nhưng mà để như vậy cho nó đồng nhất
   private signForgotPasswordToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
     return signToken({
       payload: {
@@ -135,12 +136,11 @@ class UsersService {
     }
   }
 
-  async login(user_id: string) {
+  async login({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
     const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
       user_id,
-      verify: UserVerifyStatus.Unverified
+      verify
     })
-
     const { iat, exp } = await this.decodeRefreshToken(refresh_token)
 
     // Thêm refresh_token vào trong database
@@ -152,7 +152,6 @@ class UsersService {
         exp
       })
     )
-
     return {
       access_token,
       refresh_token
@@ -311,7 +310,6 @@ class UsersService {
         }
       ])
     ])
-
     const [access_token, refresh_token] = token
     const { iat, exp } = await this.decodeRefreshToken(refresh_token)
 
@@ -324,7 +322,6 @@ class UsersService {
         exp
       })
     )
-
     return {
       access_token,
       refresh_token
