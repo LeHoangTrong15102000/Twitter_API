@@ -119,6 +119,8 @@
 
 ### Get user profile
 
+- Trước khi mà follow user thì cần phải get được `user Profile` -> `Username` là unique nên không thể nào có `username` trùng với nhau được -> Nếu khi mà người dùng muốn thay đổi username mà username đó đã có trong database rồi thì không cho phép thay đổi
+
 ### Follow User
 
 ### Unfollow User

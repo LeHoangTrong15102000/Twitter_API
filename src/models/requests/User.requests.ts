@@ -68,6 +68,7 @@ export interface UpdateMeReqBody {
   cover_photo?: string
 }
 
+// Khai báo username bên trong thằng ParamsDictionary
 export interface GetUserProfileReqParams extends ParamsDictionary {
   username: string
 }

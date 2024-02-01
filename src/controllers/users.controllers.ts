@@ -175,6 +175,7 @@ export const getMeController = async (req: Request, res: Response, next: NextFun
   })
 }
 
+// ParamsDictionary chỉ là kiểu chung chung, nên chúng ta dùng kiểu custom để thay thế
 export const getUserProfileController = async (
   req: Request<GetUserProfileReqParams>,
   res: Response,
