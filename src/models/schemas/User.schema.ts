@@ -22,6 +22,7 @@ interface UserType {
 }
 
 export default class User {
+  // Kiểu dữ liệu nhận vào để đưa lên db
   _id?: ObjectId
   name: string
   email: string

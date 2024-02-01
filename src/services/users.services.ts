@@ -467,11 +467,11 @@ class UsersService {
   }
 
   async follow(user_id: string, followed_user_id: string) {
+    // Tìm người được chúng ta follow
     const follower = await databaseService.followers.findOne({
       _id: new ObjectId(user_id),
       followed_user_id: new ObjectId(followed_user_id)
     })
-
     if (follower === null) {
       await databaseService.followers.insertOne(
         new Follower({

@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb'
 
+// interface là để kiểu tra thuộc tính đầu vào, ? thì là optional
 interface RefreshTokenType {
   _id?: ObjectId
   token: string
@@ -10,6 +11,7 @@ interface RefreshTokenType {
 }
 
 export default class RefreshToken {
+  // Các thuộc tính ở đây sẽ bắt buộc trên db
   _id?: ObjectId
   token: string
   created_at: Date
@@ -21,6 +23,7 @@ export default class RefreshToken {
     this.token = token
     this.created_at = created_at || new Date()
     this.user_id = user_id
+    // Cũng translate thằng iat và exp về kiểu Date() vì lúc tạo ra là nó là s
     this.iat = new Date(iat * 1000) // Convert Epoch time to Date
     this.exp = new Date(exp * 1000) // Convert Epoch time to Date
   }

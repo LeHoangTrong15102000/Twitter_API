@@ -7,6 +7,8 @@ export interface TweetRequestBody {
   audience: TweetAudience
   content: string
   parent_id: null | string // Chỉ null khi tweet gốc, không thì tweet_id cha dạng string
+
+  // Sau này dùng tên trong mảng hashtags rồi lặp qua tìm ra hashtags_id rồi thêm vào mảng `objectId - hashtags` của một collection tweet
   hashtags: string[] // tên của hashtag dạng ['javascript', 'typescript']
   mentions: string[] // user_id[]
   medias: Media[]

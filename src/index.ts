@@ -10,6 +10,7 @@ import { initFolder } from './utils/file'
 import path from 'path'
 import { UPLOAD_DIR } from './constants/dir'
 import staticRouter from './routes/static.routes'
+import { ObjectId } from 'mongodb'
 
 config()
 

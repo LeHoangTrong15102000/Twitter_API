@@ -123,6 +123,12 @@
 
 ### Follow User
 
+- Khi mà `Follow` một ai đấy thì sẽ thêm `document` vào cái `collection` là `Follower` -> Sẽ không có `updated_at` trong document vì khi mà chúng ta hủy `Follow` thì chúng ta sẽ xóa cái `document` này đi
+
+- Khi Follow ai thì gửi `user_id` của người đó lên -> Và phải `verify_email` rồi thì mới được `follow` người khác -> Và bắt thằng client nó gửi lên là `followed_user_id` cho chúng ta
+
+- Check xem người đó có tồn tại không thì mới `follow` -> Chứ không tồn tại mà follow thì nó không đúng
+
 ### Unfollow User
 
 ### Fix bug unique username
