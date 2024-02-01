@@ -131,7 +131,13 @@
 
 ### Unfollow User
 
+- Trường hợp mà `unfollow` thì cũng check xem `followed_user_id` truyền vào có hợp lệ hay không
+
+- middleware `verifiedUserValidator` thì cái middleware chỗ này để vào để check cho chắc ăn vì chưa `verify email` thì không thể nào `unfollow` user được
+
 ### Fix bug unique username
+
+- Khi mà `updateMe` thì người dùng chỉ được cập nhật username khi mà `username` chưa có tồn tại trong database mà thôi -> Còn nếu mà đã cập nhật rồi thì không cho phép cập nhật -> Vậy thì chúng ta cần phải validate cho trường username trong updateMe
 
 ### Change Password
 

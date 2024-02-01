@@ -539,7 +539,7 @@ export const unfollowValidator = validate(
     {
       user_id: userIdSchema
     },
-    ['body']
+    ['params']
   )
 )
 

@@ -30,7 +30,8 @@ import {
   registerValidator,
   resetPasswordValidator,
   updateMeValidator,
-  verifyForgotPasswordTokenValidator
+  verifyForgotPasswordTokenValidator,
+  unfollowValidator
 } from '~/middlewares/users.middlewares'
 import { UpdateMeReqBody } from '~/models/requests/User.requests'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -189,6 +190,7 @@ usersRouter.delete(
   '/follow/:user_id',
   accessTokenValidator,
   verifiedUserValidator,
+  unfollowValidator,
   wrapRequestHandler(unfollowController)
 )
 
