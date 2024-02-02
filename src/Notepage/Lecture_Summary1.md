@@ -129,6 +129,9 @@
 
 - Check xem người đó có tồn tại không thì mới `follow` -> Chứ không tồn tại mà follow thì nó không đúng
 
+GOOGLE_CLIENT_ID='902747943535-gogleqasrvg4ihh9f61dsfkrknns1jk0.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET='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'
+
 ### Unfollow User
 
 - Trường hợp mà `unfollow` thì cũng check xem `followed_user_id` truyền vào có hợp lệ hay không
@@ -141,231 +144,28 @@
 
 ### Change Password
 
+- Thực hiện change password cập nhật lại mật khẩu của người dùng
+
 ## OAuth 2.0
 
-## Xử lý Media
+- Mặc dù là nói là flow của google nhưng nó vẫn áp dụng được với Facebook, github, twitter, ...
 
-### Upload file bằng Formidable
+- Sau khi người dùng nhấn vào đăng nhập với google thì chúng ta sẽ Redirect người dùng về với đường `LINK`: `https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?redirect_uri=http....` thì cái đường link kiểu này là do chúng ta `config` -> Và google nó sẽ xác thực những cái `query` mà chúng ta truyền vào nếu chúng ta truyền vào sai thì google nó không cho người dùng `đăng nhập` đâu -> Thì những cái query dựa trên những cái mà chúng ta vừa `create` lúc nảy như là `OAuth  consent screen` hay là `Crendentials`
 
-- Đôi khi cái gợi ý của nó sx không có vài options của V3 -> Do chúng ta sử dụng @types version 2 -> Nên là chuẩn nhất là lên document dể đọc
+- Khi mà người dùng mà chọn tài khoản và đăng nhập thành công thì thằng `google` sẽ redirect về cái API của chúng ta có dạng như sau `https://api.duthanhduoc.com/api.oauth/google?code=4%2F0A.....&scope` đi kèm với những cái `query` do `google` chèn vào, thì đây là những cái mà google nó tự sinh ra và nó gửi lại cho chúng ta
 
-- Chúng ta muốn khi mà chúng ta upload thì nó sẽ vào thư mục như chúng ta đã khai báo
+  - Thì khi mà google redirect cái đường link của chúng ta thì đó là một cái method `GET` thì server của chúng ta sẽ nhận được cái `code` `scope` do google cung cấp
 
-- Mặc định sẽ cho upload vô hạn file -> Mình sẽ giới hạn lại chỉ cho upload 1 file
+  - Server sẽ nhận được cái `code` và tiến hành gọi lên google API để lấy thông tin `id_token` và `access_token`
 
-- Lấy luôn đuôi mở rỗng cho nó luôn -> Vì khi mà uploads chúng ta không biết đây là file gì pdf hay là file ảnh
+  - Server sẽ lấy thông tin `id_token` và `access_token` để gọi Google API 1 lần nữa để lấy thông tin người dùng như `email`, `name`, `avatar`, ....
 
-### Tạo folder upload
+  - Sau khi đã có được email rồi thì sẽ tiến hành kiểm tra xem email này đã được đăng kí chưa -> Nếu chưa thì tạo mới user (mật khẩu cho random, sau này người dùng reset mật khẩu để đổi mật khẩu cũng được)
 
-### Filter upload ảnh
+  - Tạo `access_token` và `refresh_token`
 
-- Nếu mà throw một cái lỗi trong callback async thì nó sẽ không làm function bọc ở ngoài `rejected` được -> Khi mà nó có lỗi thì ứng dụng sẽ không bắt được lỗi đó do nó nằm trong một cái callback async -> Nên là ứng dụng của chúng ta sẽ bị `crash app` thì chúng ta cần phải bắt được cái lỗi này -> Nên chuyển nó `callback async` thành một cái `Promise`
+  - server redirect về `https://duthanhduoc.com/login?access_token=...&refresh_token=...` để gửi lại cho client -> Khi client nhận được cái URL này thì dùng useSearchParams để lấy ra các params `access_token` và `refresh_token`
 
-- Thêm filter vào để chúng ta chỉ cho phép upload Image không cho phép upload file PDF -> Dựa vào cái `mimeType` để có thể check được kiểu dữ liệu của tấm hình -> Và check cả image vì chúng ta mong muốn ngta gửi lên key là `image` chứ không phải là một cái key nào khác
+  - Website của mình nhận được `access_token` và `refresh_token` qua query và tiến hành lưu vào local storage để sử dụng cho các request sau. Dùng cookie thì tại `bước 8` chúng ta sẽ redirect về `https://duthanhduoc.com/login` và set cookie tại đây
 
-- Khi mà không gửi gì lên thì nó vẫn vượt qua được vòng `filter` của chúng ta -> Nó không chạy vào trong `filter` nên là chúng ta không có check được cái lỗi ở đây
-
-### Xử lý ảnh với Sharp
-
-- Đôi lúc cần phải remove EXIF và metadata đi để giảm kích thước của tấm hình của chúng ta đi -> 1 cái thư viện bên Nodejs hỗ trợ cho chúng ta xử lý ảnh đó là sharp -> Thì đây là thư viện `high performance image processing` có thể coi là thư viện số một về xử lý ảnh bên NodeJS rồi
-
-- Sẽ xử lý chuyển tất cả ảnh sang `JPEG` hết
-
-- Rồi khi mà chuyển đổi từ image này sang image khác thì chúng ta lưu ở đâu -> Thì chúng ta sẽ lưu tạm vào cái thư mục `temp` -> Khi mà gửi tấm ảnh lên thì không cần gửi thêm `metadata` của tấm ảnh làm gì
-
-- Khi mà upload lên thì chúng ta muốn nó `result` về một cái `URL` hay vì result về kết quả file -> Do hiện tại chúng chưa khai báo route `/uploads/{nameFile}`
-
-- Sau khi upload xong thì chúng ta muốn xóa đi tấm ảnh ở thư mục `temp` -> Mục đích của việc đưa vào thư mục tạm là để chúng ta xử lý tấm ảnh đó -> Sau khi upload xong thì chúng ta cần phải xóa file trong thư mục `uploads/temp` -> Có thể `fs` hoặc là `fs/promise` để xóa đi ảnh trong thư mục `temp`.
-
-### Xử lý tham số truyền từ command
-
-- Sẽ xử lý tiếp vài vấn đề nữa với file ảnh
-
-1. folder `uploads` nên bỏ vào `.gitignore` vì đẩy lên git sẽ khá nặng
-2. Để folder `uploads` trong máy tính local sẽ không thể share file với mọi người trong team được. => Giải pháp là upload lên một nền tảng như S3, hoặc upload lên server của chúng ta
-
-- Giả sử khi Server vẫn sử dụng folder `uploads` thì phải trả về `domain` của chúng ta -> Vậy thì chúng ta phải check được đâu là môi trường chúng ta dev, đâu là môi trường trên server của chúng ta để trả về kết quả cho nó đúng
-
-- Có thể dùng JS để check nó ở trong cái môi trường nào, nhưng ở đây là recommend là sử dụng thư viện `minimist` -> Thằng này có chức năng là `parse` cái `argv` của chúng ta
-
-### Serving static file
-
-- Thực hiện phục vụ tập tin tĩnh -> Chúng ta muốn là khi mà click vào đường link thì phải show ra được tấm ảnh cho chúng ta
-
-### 1 cách khác để serve static file
-
-- Sẽ có thêm một cách nữa để mà `serving static file` -> Sẽ serving theo cái cách mà chúng ta hay thường làm là tạo `routing` `GET`
-
-- Nếu mà có lỗi thì nó sẽ cho ra lỗi là `500` -> Chỗ này chúng ta có thể custom cái lỗi này
-
-- Nếu mà dùng error callback mà không có `res` trog trường hợp lỗi -> Nếu mà đường đẫn bị sai thì nó sẽ nhảy vào cái `callback Error` chứ nó không response cho chúng ta -> Vậy nên khi là có lỗi thì chúng ta cần phải `res` cho nó ở bên trong cái function lỗi
-
-### Upload multiple image
-
-- Dùng map để Promise.all tất cả các file bên trong để tiết kiệm thời gian
-
-- Có 4 cái File đưa lên thì không nên await từng cái file mà nên dùng Promise.all
-
-- Mặc định `maxTotatFileSize` nó sẽ lấy giá trị mặc định là `maxFileSize`
-
-### Upload video
-
-### Streaming video
-
-### Fix bug header Content-Range không play được video
-
-### Tìm hiểu về HLS Streaming
-
-### Encode video sang HLS
-
-### Fix lỗi encode HLS không được
-
-### Play HLS Streaming trên client
-
-### Fix bug chọn resolution.width dẫn đến convert command bị sai
-
-### Xử lý encode video bằng queue
-
-### Kiểm tra status video encode
-
-### Retro chương media
-
-````{
-$jsonSchema: {
-bsonType: 'object',
-title: 'Refresh Token object validation',
-required: [
-'_id',
-'name',
-'email',
-'date_of_birth',
-'password',
-'created_at',
-'updated_at',
-'email_verify_token',
-'forgot_password_token',
-'verify',
-'bio',
-'location',
-'website',
-'username',
-'avatar',
-'cover_photo'
-],
-properties: {
-\_id: {
-bsonType: 'objectId',
-description: '\'\_id\' must be a ObjectId and is required'
-},
-name: {
-bsonType: 'string',
-description: '\'token\' must be a string and is required'
-},
-email: {
-bsonType: 'string',
-description: '\'user_id\' must be a ObjectId and is required'
-},
-date_of_birth: {
-bsonType: 'date',
-description: '\'date_of_birth\' must be a date and is required'
-},
-password: {
-bsonType: 'string',
-description: '\'created_at\' must be a date and is required'
-},
-created_at: {
-bsonType: 'date',
-description: '\'created_at\' must be a date and is required'
-},
-updated_at: {
-bsonType: 'date',
-description: '\'updated_at\' must be a date and is required'
-},
-email_verify_token: {
-bsonType: 'string',
-description: '\'email_verify_token\' must be a string and is required'
-},
-forgot_password_token: {
-bsonType: 'string',
-description: '\'forgot_password_token\' must be a string and is required'
-},
-verify: {
-bsonType: 'int',
-'enum': [
-0,
-1,
-2
-]
-},
-bio: {
-bsonType: 'string',
-description: '\'bio\' must be a string and is required'
-},
-location: {
-bsonType: 'string',
-description: '\'location\' must be a string and is required'
-},
-website: {
-bsonType: 'string',
-description: '\'website\' must be a string and is required'
-},
-username: {
-bsonType: 'string',
-description: '\'username\' must be a string and is required'
-},
-avatar: {
-bsonType: 'string',
-description: '\'avatar\' must be a string and is required'
-},
-cover_photo: {
-bsonType: 'string',
-description: '\'cover_photo\' must be a string and is required'
-}
-},
-additionalProperties: false
-}
-}```
-````
-
-````{
-  $jsonSchema: {
-    bsonType: 'object',
-    title: 'Refresh Token object validation',
-    required: [
-      '_id',
-      'token',
-      'user_id',
-      'created_at',
-      'iat',
-      'exp'
-    ],
-    properties: {
-      _id: {
-        bsonType: 'objectId',
-        description: '\'_id\' must be a ObjectId and is required'
-      },
-      token: {
-        bsonType: 'string',
-        description: '\'token\' must be a string and is required'
-      },
-      user_id: {
-        bsonType: 'objectId',
-        description: '\'user_id\' must be a ObjectId and is required'
-      },
-      created_at: {
-        bsonType: 'date',
-        description: '\'created_at\' must be a date and is required'
-      },
-      iat: {
-        bsonType: 'date',
-        description: '\'iat\' must be a date and is required'
-      },
-      exp: {
-        bsonType: 'date',
-        description: '\'exp\' must be a date and is required'
-      }
-    },
-    additionalProperties: false
-  }
-} ```
-````
+  - Thì thằng searchParams sẽ đọc và sửa đổi
