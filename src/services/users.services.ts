@@ -197,7 +197,7 @@ class UsersService {
     return Boolean(user)
   }
 
-  // getOauth
+  // Method để lấy id_token và access_token từ Google API
   private async getOauthGoogleToken(code: string) {
     const body = {
       code,
@@ -211,26 +211,30 @@ class UsersService {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     })
+    // data trả về phải có dạng là access_token: string, id_token: string
     return data as {
       access_token: string
       id_token: string
     }
   }
 
+  // Method lấy info User từ Google API
   private async getGoogleUserInfo(access_token: string, id_token: string) {
+    // sẽ dùng oauth2 v1 để lấy ra thông tin người dùng, method get vì lấy thông tin từ Google API(ở đây Server được coi là client)
     const { data } = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', {
       params: {
         access_token,
         alt: 'json'
       },
       headers: {
+        // truyền id_token lên headers
         Authorization: `Bearer ${id_token}`
       }
     })
     return data as {
       id: string
       email: string
-      verified_email: boolean
+      verified_email: boolean // Này là xác thực của google
       name: string
       given_name: string
       family_name: string
@@ -242,6 +246,7 @@ class UsersService {
   async oauth(code: string) {
     const { id_token, access_token } = await this.getOauthGoogleToken(code)
     const userInfo = await this.getGoogleUserInfo(access_token, id_token)
+    // Chúng ta chỉ chấp nhận khi gmail của người dùng đã được google verify rồi
     if (!userInfo.verified_email) {
       throw new ErrorWithStatus({
         message: USERS_MESSAGES.GMAIL_NOT_VERIFIED,
@@ -269,19 +274,20 @@ class UsersService {
         access_token,
         refresh_token,
         newUser: 0,
-        verify: user.verify
+        verify: user.verify // Người dùng đã tồn tại trong db rồi nhưng không biết là có verify email hay chưa
       }
     } else {
       // random string password
       const password = Math.random().toString(36).substring(2, 15)
-      // Không thì đăng kí
+      // Không thì đăng kí, dùng lại logic của thằng register
       const data = await this.register({
         email: userInfo.email,
         name: userInfo.name,
-        date_of_birth: new Date().toISOString(),
+        date_of_birth: new Date().toISOString(), // Tạo tại thời gian hiện tại, sau này người dùng tự chuyển lại
         password,
         confirm_password: password
       })
+      // Thêm newUser vào để client biết được là đây là login hay là register
       return { ...data, newUser: 1, verify: UserVerifyStatus.Unverified }
     }
   }

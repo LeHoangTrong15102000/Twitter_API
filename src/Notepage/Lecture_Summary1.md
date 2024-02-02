@@ -169,3 +169,24 @@ GOOGLE_CLIENT_SECRET='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'
   - Website của mình nhận được `access_token` và `refresh_token` qua query và tiến hành lưu vào local storage để sử dụng cho các request sau. Dùng cookie thì tại `bước 8` chúng ta sẽ redirect về `https://duthanhduoc.com/login` và set cookie tại đây
 
   - Thì thằng searchParams sẽ đọc và sửa đổi
+
+  - Tiếp theo là tạo đường link cho thằng `Client` -> Để khi mà người dùng click vào cái Link này thì nó chuyển tới cái trang đăng nhập với `google`
+    -> `https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow`
+
+  - Những thứ cần có để có thể gửi cho Client đăng nhập bằng google
+
+- Sau khi đã setup cho FE rồi tiếp theo chúng ta sẽ vào làm logic cho phần BE -> Phải khai báo các đường dẫn cho nó giống với cái mà chúng ta đã setup sẵn ở FE rồi -> Vì khi tiếp nhận thì server chúng ta cần phải có những cái `endpoint` như thế
+
+- Đầu tiên phải lấy cái `code` từ `req.query` ra -> Sau đó gọi đến `userService` để xử lý
+
+  - Sau khi nhận được code rồi thì server tiến hành gọi lên Google API để lấy thông tin về `id_token` và `access_token`
+
+  - Cài đặt `axios` để gọi API từ Google API
+
+  - Sẽ lấy `usename` và `email` từ người dùng bằng `id_token` và `access_token` còn khi nào người dùng muốn đăng nhập bằng mật khẩu thì cần phải `reset_password` lại -> Để người dùng muốn thì có thể login với `google` không thì phải nhập mật khẩu
+
+  - Sau khi đã lấy được `username` , `email` và `avatar` -> Rồi chúng ta kiểm tra xem email google này của người dùng đã có trong database hay chưa -> Nếu chưa thì phải `random password` cho người dùng(người dùng có thể reset lấy lại mật khẩu sau).
+
+  - Tạo `access_token` và `refresh_token` từ phía `server`
+
+  - Server redirect về `https//localhost:3000/login/oauth?access_token=...refresh_token=...` để phía FE sẽ lấy được `access_token` và `refresh_token` và set vào `local-storage` của người dùng

@@ -41,6 +41,7 @@ export const loginController = async (
   })
 }
 
+// Thực hiện login với OAuth 2
 export const oauthController = async (req: Request, res: Response, next: NextFunction) => {
   const { code } = req.query
   const result = await usersService.oauth(code as string)
