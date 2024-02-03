@@ -8,7 +8,6 @@ import mediasRouter from './routes/medias.routes'
 import { config } from 'dotenv'
 import { initFolder } from './utils/file'
 import path from 'path'
-import { UPLOAD_DIR } from './constants/dir'
 import staticRouter from './routes/static.routes'
 import { ObjectId } from 'mongodb'
 

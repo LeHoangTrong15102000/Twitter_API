@@ -12,8 +12,8 @@ const mediasRouter = Router()
 
 mediasRouter.post(
   '/upload-image',
-  // accessTokenValidator,
-  // verifiedUserValidator,
+  accessTokenValidator,
+  verifiedUserValidator,
   wrapRequestHandler(uploadImageController)
 )
 

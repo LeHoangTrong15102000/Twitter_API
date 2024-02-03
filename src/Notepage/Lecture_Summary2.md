@@ -16,7 +16,7 @@
 
 ### Filter upload ảnh
 
-- Nếu mà throw một cái lỗi trong callback async thì nó sẽ không làm function bọc ở ngoài `rejected` được -> Khi mà nó có lỗi thì ứng dụng sẽ không bắt được lỗi đó do nó nằm trong một cái callback async -> Nên là ứng dụng của chúng ta sẽ bị `crash app` thì chúng ta cần phải bắt được cái lỗi này -> Nên chuyển nó `callback async` thành một cái `Promise`
+- Nếu mà throw một cái lỗi trong callback async thì nó sẽ không làm `function` bọc ở ngoài `rejected` được -> Khi mà nó có lỗi thì ứng dụng sẽ không bắt được lỗi đó do nó nằm trong một cái callback async -> Nên là ứng dụng của chúng ta sẽ bị `crash app` thì chúng ta cần phải bắt được cái lỗi này -> Nên chuyển nó `callback function` thành một cái `Promise` để có thể `Promise.reject(err)` khi mà có lỗi
 
 - Thêm filter vào để chúng ta chỉ cho phép upload Image không cho phép upload file PDF -> Dựa vào cái `mimeType` để có thể check được kiểu dữ liệu của tấm hình -> Và check cả image vì chúng ta mong muốn ngta gửi lên key là `image` chứ không phải là một cái key nào khác
 
@@ -66,6 +66,10 @@
 - Mặc định `maxTotatFileSize` nó sẽ lấy giá trị mặc định là `maxFileSize`
 
 ### Upload video
+
+- Chỉ cho phép upload 1 video nhưng phòng hờ thì vẫn trả về array Video cho người ta -> Phòng thờ sau này chúng ta nâng cấp API lên cho phép người dùng `Upload` nhiều video
+
+- Keep extentions ở trong upload video nó bị lỗi nên là chúng ta sẽ custom xử lý cái đuôi file mở rộng của thằng này sau -> Sau khi upload xong thì sẽ nối đuôi file mở rộng vào
 
 ### Streaming video
 

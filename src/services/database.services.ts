@@ -7,6 +7,8 @@ import Follower from '~/models/schemas/Follower.schema'
 import Tweet from '~/models/schemas/Tweet.shema'
 import Like from '~/models/schemas/Like.schema'
 import Hashtag from '~/models/schemas/Hashtag.schema'
+import VideoStatus from '~/models/schemas/VideoStatus.schema'
+import Bookmark from '~/models/schemas/Bookmark.schema'
 
 config() // lấy thằng config() để có thể sử dụng được thằng env
 const uri = `mongodb+srv://${envConfig.dbUsername}:${envConfig.dbPassword}@cluster0.jzb6290.mongodb.net/?retryWrites=true&w=majority`
@@ -57,12 +59,20 @@ class DatabaseService {
     return this.db.collection(envConfig.dbTweetsCollection)
   }
 
+  get videoStatus(): Collection<VideoStatus> {
+    return this.db.collection(envConfig.dbVideoStatusCollection)
+  }
+
   get likes(): Collection<Like> {
     return this.db.collection(envConfig.dbLikesCollection)
   }
 
   get hashtags(): Collection<Hashtag> {
     return this.db.collection(envConfig.dbHashtagsCollection)
+  }
+
+  get bookmarks(): Collection<Bookmark> {
+    return this.db.collection(envConfig.dbBookmarksCollection)
   }
 }
 
