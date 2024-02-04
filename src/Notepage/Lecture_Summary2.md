@@ -73,6 +73,18 @@
 
 ### Streaming video
 
+- Sẽ tiến hành `streaming-video`
+
+- Cái serve static chỉ có tác dụng mà chúng ta `serve static image` thôi còn cái video thì nó sẽ có vấn đề
+
+  - Khi mà đưa qua serving static video mặc định của thăng expresJS thì nó hoạt động rất là oke -> Ban đầu chúng ta không tải hết kích thước toàn bộ của video -> Load đến đâu thì chúng ta sẽ tải đến đấy
+
+  - Chúng ta có thể tự custom streaming video cho chính chúng ta
+
+- Thì đầu tiên khi mà stream thì client nó sẽ gửi lên request cái thuộc tính rất là quan trọng đó là `range` ở `Request Headers`
+
+- Sẽ đọc coi thử dung lượng video đấy bao nhiêu byte -> Sau đó chúng ta sẽ trả về cho client từng đoạn dung lượng -> Ví dụ như dung lượng video đấy là 100MB đi chẳng hạn, đoạn đầu tiên dựa vào khoảng thời gian chúng ta trả về 1-10MB, rồi 11MB - 20MB, 21MB - 30MB, ... -> thì sẽ trả về theo từng cái byte, thì cái mấu chốt của streaming là như thế
+
 ### Fix bug header Content-Range không play được video
 
 ### Tìm hiểu về HLS Streaming

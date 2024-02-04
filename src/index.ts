@@ -10,6 +10,12 @@ import { initFolder } from './utils/file'
 import path from 'path'
 import staticRouter from './routes/static.routes'
 import { ObjectId } from 'mongodb'
+import { UPLOAD_VIDEO_DIR } from './constants/dir'
+import tweetsRouter from './routes/tweets.routes'
+import bookmarksRouter from './routes/bookmarks.routes'
+import likesRouter from './routes/likes.routes'
+import searchRouter from './routes/search.routes'
+import conversationsRouter from './routes/conversations.routes'
 
 config()
 
@@ -24,7 +30,13 @@ initFolder()
 app.use(express.json()) // Nó sẽ biến JSON thành một cái object cho chúng ta
 app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
+app.use('/tweets', tweetsRouter)
+app.use('/bookmarks', bookmarksRouter)
+app.use('/likes', likesRouter)
+app.use('/search', searchRouter)
+app.use('/conversations', conversationsRouter)
 app.use('/static', staticRouter)
+app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
 
 // app.use('/static', express.static(UPLOAD_DIR)) // sẽ tự động handle và xuất ra cho chúng ta cái file
 
