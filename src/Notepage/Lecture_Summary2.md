@@ -91,6 +91,14 @@
 
 ### Tìm hiểu về HLS Streaming
 
+- Sẽ học kĩ thuật streaming nâng cấp hơn xíu đó là `HLS Streaming` -> Trên youtube hay Netflix cho phép chúng ta phát video với nhiều độ phân giải khác nhau thì biết quyết ở giao thức `Adaptive Streaming` -> Cho phép server phát video với nhiều độ phân giải khác nhau, `bitrate` khác nhau -> server sẽ chọn độ phân giải và bitrate phụ thuộc vào tốc độ mạng của người dùng.
+
+- Có 2 giao thức Adaptive Streaming phổ biến nhất hiện nay là `HLS` và `DASH` -> HLS thì phổ biến trong hệ sinh thái `Apple`
+
+  - Stream là khái niệm phát video từ server cho người dùng xem, còn live stream là phát video trực tiếp
+
+  - Stream video truyền thống thì chúng ta không cần phải setting cái gì nhiều cả, thằng expressJS nó đã hỗ trợ cho chúng ta, chúng ta chỉ cần truyền đường dẫn đến folder upload là được
+
 ### Encode video sang HLS
 
 ### Fix lỗi encode HLS không được
