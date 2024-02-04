@@ -87,6 +87,8 @@
 
 ### Fix bug header Content-Range không play được video
 
+- End phải luôn luôn nhỏ hơn videoSize nếu lớn hơn thì không được -> Nếu end mà bằng videoSize thì nó sẽ không có chấp nhận và cái video nó sẽ không load được
+
 ### Tìm hiểu về HLS Streaming
 
 ### Encode video sang HLS
