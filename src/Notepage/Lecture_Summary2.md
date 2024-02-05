@@ -99,6 +99,12 @@
 
   - Stream video truyền thống thì chúng ta không cần phải setting cái gì nhiều cả, thằng expressJS nó đã hỗ trợ cho chúng ta, chúng ta chỉ cần truyền đường dẫn đến folder upload là được
 
+  - Khi mà chúng ta upload video lên server thì server nó sẽ tiến hành covert cái video đó thành file `.m3u8` và nhiều file `.ts` nhỏ
+
+  - Khi người dùng xem video, server nó sẽ phát video bằng cách gửi các file `.ts` này cho trình duyệt. Ở phía trình duyệt sẽ dùng các thư viện hỗ trợ hls như `hls.js` để phát video.
+
+- Tích hợp ffmpeg vào môi trường Nodejs, không nên sử dụng thư viện bên thứ 3, bởi vì ngta cập nhật không ó thường xuyên, và cũng chứa rất là ít options để lựa chọn và cũng dễ gặp lỗi
+
 ### Encode video sang HLS
 
 ### Fix lỗi encode HLS không được
@@ -112,9 +118,3 @@
 ### Kiểm tra status video encode
 
 ### Retro chương media
-
-## Tối ưu hiệu suất MongoDB
-
-## Chức năng Tweet
-
-## Chức năng Search nâng cao

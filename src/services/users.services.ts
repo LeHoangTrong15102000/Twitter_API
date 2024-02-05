@@ -142,7 +142,7 @@ class UsersService {
       verify
     })
     const { iat, exp } = await this.decodeRefreshToken(refresh_token)
-
+    console.log('Checkkkkk iat , exp', iat, exp)
     // Thêm refresh_token vào trong database
     await databaseService.refreshTokens.insertOne(
       new RefreshToken({

@@ -9,13 +9,14 @@ import { config } from 'dotenv'
 import { initFolder } from './utils/file'
 import path from 'path'
 import staticRouter from './routes/static.routes'
-import { ObjectId } from 'mongodb'
+import { MongoClient, ObjectId } from 'mongodb'
 import { UPLOAD_VIDEO_DIR } from './constants/dir'
 import tweetsRouter from './routes/tweets.routes'
 import bookmarksRouter from './routes/bookmarks.routes'
 import likesRouter from './routes/likes.routes'
 import searchRouter from './routes/search.routes'
 import conversationsRouter from './routes/conversations.routes'
+import { envConfig } from './constants/config'
 
 config()
 
@@ -45,6 +46,26 @@ app.use(defaultErrorHandler)
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+
+// const mgclient = new MongoClient(
+//   `mongodb+srv://${envConfig.dbUsername}:${envConfig.dbPassword}@cluster0.jzb6290.mongodb.net/?retryWrites=true&w=majority`
+// )
+
+// const db = mgclient.db('earth')
+// const users = db.collection('users')
+// const usersData = []
+// function getRandomNumber() {
+//   return Math.floor(Math.random() * 100) + 1
+// }
+
+// for (let i = 0; i < 1000; i++) {
+//   usersData.push({
+//     name: 'user' + (i + 1),
+//     age: getRandomNumber(),
+//     sex: i % 2 === 0 ? 'male' : 'female'
+//   })
+// }
+// users.insertMany(usersData)
 
 exitHook(() => {
   databaseService.disconnect()

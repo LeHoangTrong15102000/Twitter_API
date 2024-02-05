@@ -96,7 +96,7 @@
 
 ### Code Logic updateMeValidator và updateMeController
 
-- UpdateOne thì nó chỉ update cho chúng ta mà thôi không trả về document cho chúng ta, còn `findOneAndUpdate` ngoài việc update thì nó còn trả về `document` cho chúng ta -> Lấy về cái document mới để người dùng `update` lại thông tin của họ
+- UpdateOne thì nó chỉ update cho chúng ta mà thôi không trả về document cho chúng ta, còn `findOneAndUpdate` ngoài việc update thì nó còn trả về `document` cho chúng ta -> Lấy về cái document mới để người dùng `update` lại thông tin của họ(trên client)
 
 ### Code filterMiddleware để lọc data body
 
