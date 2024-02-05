@@ -29,7 +29,7 @@ likesRouter.get(
  * Header: { Authorization: Bearer <access_token> }
  */
 likesRouter.delete(
-  '/tweets/:tweets_id',
+  '/tweets/:tweet_id',
   accessTokenValidator,
   verifiedUserValidator,
   tweetIdValidator,

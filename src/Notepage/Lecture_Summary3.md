@@ -64,13 +64,50 @@
 
 - Chúng ta sẽ tạo cái fuction để hỗ trợ việc tạo index này
 
+- Email nên chèn một cái `unique` vào cho nó để lỡ hệ thống có một cái `email` y như vậy thì nó sẽ báo lỗi cho chúng ta
+
+- Gọi indexUsers khi mà cái database của chúng ta nó đã được `connect()` -> Chúng ta muốn hàm connect nso chỉ thực hiện thành động connect thôi không còn thưc hiện hành động nào khác nữa -> Nên là đưa nó ra ngoài là hợp lý nhất
+
+- Khi mà chúng thực hiện các function thì chúng ta nên hạn chế những cái `side effect` nhất có thể
+
+- Khi mà thực hiện connect xong thì chúng ta sẽ gọi tới cái `indexUsers`
+
 ### Fix bug Refresh Token
+
+- Exp và iat nên lưu theo kiêu Date() để chúng ta tìm và xử lý trong MongoDB nó sẽ tiên hơn nhiều
+
+- Có 2 cách để quy định exp đó là cách đầu tiên chúng ta truyền exp vào `payload`
+
+  - Cách thứ 1 là truyền vào thời điểm hết hạn -> tức là thời điểm nào đó trong tương lai
+  - Cách thứ 2 là truyền vào thời gian hết hạn -> 1 ngày, 2 ngày gì đấy
+
+- Người dùng cứ truyền vào number, còn chuyện covert cứ để thằng `refreshTokensSchema` sẽ covert trước khi nó gửi lên `databases`
+
+- Covert từ `EpochTime` sang `Date` thì chỉ cần nhân cho 1000 là được
 
 ### Index refresh_tokens video_status_followers
 
 ### Tối ưu index khi khởi động Server
 
-### Bonus một số tiếp tối ưu MongoDB
+- Tối ưu index khi khởi động lại server
+
+- Khi mà run cái app của chúng ta lên nếu mà collection nó đã được index rồi thì chúng ta không khởi tạo index nữa -> Nó sẽ gây thất thoát về `performance` không đáng có
+
+### Bonus một số tips tối ưu MongoDB
+
+- Tối ưu MongoDB
+
+- Ngoài việc inex thì dưới đây là 1 số tips để chúng ta có thể tối ưu hơn.
+
+  - Phân tích câu truy vấn với `explain`
+
+  - Dùng MongoDB Driver lúc nào cũng nhanh hơn dùng các ODM (ORM) như Mongoose, Prisma vì nó bỏ qua các lớp ảo hoá và truy vấn trực tiếp vào database.
+
+    - Ưu điểm của những thằng như là Mongoose Prisma là chúng ta có được những chức năng nâng cao làm chúng ta code nhanh hơn, chúng ta có cái `type_set`
+
+    - Khuyết điểm là chúng ta phải đánh đổi bằng cách `performance` của chúng ta -> Khi mà chúng ta có những câu `query` phức tạp thì những thằng này nó sẽ lộ cái khuyết điểm của nó ra
+
+  - Để server của MongoDB gần với server của bạn nhất có thể.
 
 ## Chức năng Tweet
 

@@ -20,7 +20,13 @@ import { envConfig } from './constants/config'
 
 config()
 
-databaseService.connect()
+databaseService.connect().then(() => {
+  databaseService.indexUsers()
+  databaseService.indexRefreshTokens()
+  // databaseService.indexVideoStatus()
+  databaseService.indexFollowers()
+  // databaseService.indexTweets()
+})
 
 const app = express()
 const port = process.env.PORT || 8000

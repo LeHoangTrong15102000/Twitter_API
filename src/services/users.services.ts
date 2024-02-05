@@ -30,6 +30,7 @@ class UsersService {
 
   private signRefreshToken({ user_id, verify, exp }: { user_id: string; verify: UserVerifyStatus; exp?: number }) {
     // Khi mà /refresh-token thì mới thực hiện
+    // Nếu mà có exp truyền vào thì sẽ lấy exp đó/ giành cho trường hợp refresh-token để lấy lại exp cũ
     if (exp) {
       return signToken({
         payload: {
@@ -142,7 +143,7 @@ class UsersService {
       verify
     })
     const { iat, exp } = await this.decodeRefreshToken(refresh_token)
-    console.log('Checkkkkk iat , exp', iat, exp)
+    // console.log('Checkkkkk iat , exp', iat, exp)
     // Thêm refresh_token vào trong database
     await databaseService.refreshTokens.insertOne(
       new RefreshToken({

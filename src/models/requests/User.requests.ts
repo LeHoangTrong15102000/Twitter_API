@@ -40,7 +40,7 @@ export interface TokenPayload extends JwtPayload {
   token_type: TokenType
   verify: UserVerifyStatus
   iat: number
-  exp: number
+  exp: number // tin tưởng lúc nào nó cũng là number nên là nó sẽ overwrite lại cái thz cũ
 }
 
 export interface VerifyEmailReqBody {

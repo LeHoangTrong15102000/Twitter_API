@@ -7,7 +7,7 @@ import {
 } from '~/controllers/tweets.controllers'
 import {
   audienceValidator,
-  createTWeetValidator,
+  createTweetValidator,
   getTweetChildrenValidator,
   paginationValidator,
   tweetIdValidator
@@ -28,7 +28,7 @@ tweetsRouter.post(
   '/',
   accessTokenValidator,
   verifiedUserValidator,
-  createTWeetValidator,
+  createTweetValidator,
   wrapRequestHandler(createTweetController)
 )
 

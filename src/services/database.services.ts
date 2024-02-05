@@ -39,11 +39,52 @@ class DatabaseService {
   }
 
   async indexUsers() {
-    const exists = await this.users.indexExists(['email_1_password_1', 'email_1', 'username_1'])
-    if (!exists) {
+    const isExists = await this.users.indexExists(['email_1_password_1', 'email_1', 'username_1'])
+
+    if (!isExists) {
       this.users.createIndex({ email: 1, password: 1 })
       this.users.createIndex({ email: 1 }, { unique: true })
       this.users.createIndex({ username: 1 }, { unique: true })
+    }
+  }
+
+  async indexRefreshTokens() {
+    const isExists = await this.refreshTokens.indexExists(['exp_1', 'token_1'])
+
+    if (!isExists) {
+      this.refreshTokens.createIndex({ token: 1 })
+      this.refreshTokens.createIndex(
+        { exp: 1 },
+        {
+          // dựa vào móc thời gian là exp, sau khi exp hết hạn thì MongoDB nó sẽ tự động xoá đi refresh_token hết hạn
+          // Nên set theo mốc thời gian vì trong db thì các exp đều có các mốc thời gian
+          expireAfterSeconds: 0
+        }
+      )
+    }
+  }
+
+  async indexVideoStatus() {
+    const isExists = await this.videoStatus.indexExists(['name_1'])
+
+    if (!isExists) {
+      this.videoStatus.createIndex({ name: 1 })
+    }
+  }
+
+  async indexFollowers() {
+    const isExists = await this.followers.indexExists(['user_id_1_followed_user_id_1'])
+
+    if (!isExists) {
+      this.followers.createIndex({ user_id: 1, followed_user_id: 1 })
+    }
+  }
+
+  async indexTweets() {
+    const isExists = await this.tweets.indexExists(['content_text'])
+
+    if (!isExists) {
+      this.tweets.createIndex({ content: 'text' }, { default_language: 'none' })
     }
   }
 

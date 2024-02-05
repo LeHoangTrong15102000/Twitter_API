@@ -1,18 +1,26 @@
 // Todo
 
 import { check, checkSchema } from 'express-validator'
+import { TweetType } from '~/constants/enums'
+import { TWEETS_MESSAGES } from '~/constants/messages'
 import { validate } from '~/utils/validation'
 
-export const createTWeetValidator = validate(
-  checkSchema({
-    //  Todo
-  })
+export const createTweetValidator = validate(
+  checkSchema(
+    {
+      //  Todo
+    },
+    ['params', 'body']
+  )
 )
 
 export const tweetIdValidator = validate(
-  checkSchema({
-    // Todo
-  })
+  checkSchema(
+    {
+      // Todo
+    },
+    ['params', 'body']
+  )
 )
 
 export const audienceValidator = validate(
@@ -22,13 +30,24 @@ export const audienceValidator = validate(
 )
 
 export const getTweetChildrenValidator = validate(
-  checkSchema({
-    // Todo
-  })
+  checkSchema(
+    {
+      tweet_type: {
+        isIn: {
+          options: [TweetType],
+          errorMessage: TWEETS_MESSAGES.INVALID_TYPE
+        }
+      }
+    },
+    ['query']
+  )
 )
 
 export const paginationValidator = validate(
-  checkSchema({
-    //  Todo
-  })
+  checkSchema(
+    {
+      //  Todo
+    },
+    ['query']
+  )
 )
