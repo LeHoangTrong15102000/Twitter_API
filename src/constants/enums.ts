@@ -33,7 +33,7 @@ export enum EncodingStatus {
 
 export enum TweetType {
   Tweet,
-  ReTweet,
+  Retweet,
   Comment,
   QuoteTweet
 }
