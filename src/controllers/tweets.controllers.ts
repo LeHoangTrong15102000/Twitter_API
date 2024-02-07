@@ -62,13 +62,13 @@ export const getNewFeedsController = async (req: Request<ParamsDictionary, any, 
     limit,
     page
   })
-  // return res.json({
-  //   message: 'Get New Feeds Successfully',
-  //   result: {
-  //     tweets: result.tweets,
-  //     limit,
-  //     page,
-  //     total_page: Math.ceil(result.total / limit)
-  //   }
-  // })
+  return res.json({
+    message: 'Get New Feeds Successfully',
+    result: {
+      tweets: result.tweets,
+      limit,
+      page,
+      total_page: Math.ceil(result.total / limit)
+    }
+  })
 }
