@@ -12,7 +12,7 @@ interface TweetConstructor {
   content: string
   parent_id: null | string
   hashtags: ObjectId[]
-  mentions: ObjectId[]
+  mentions: string[]
   medias: Media[]
   guest_views?: number
   user_views?: number

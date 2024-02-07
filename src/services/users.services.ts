@@ -519,6 +519,7 @@ class UsersService {
   }
 
   async changePassword(user_id: string, new_password: string) {
+    // Không cần trả về document nên chỉ cần sử dụng updateOne thôi là được
     await databaseService.users.updateOne(
       {
         _id: new ObjectId(user_id)
