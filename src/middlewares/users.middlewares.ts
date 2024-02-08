@@ -585,6 +585,7 @@ export const changePasswordValidator = validate(
   })
 )
 
+// Hàm này có thể sử dụng currying
 export const isUserLoggedInValidator = (middleware: (req: Request, res: Response, next: NextFunction) => void) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (req.headers.authorization) {
