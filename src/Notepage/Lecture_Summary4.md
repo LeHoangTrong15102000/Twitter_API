@@ -8,6 +8,8 @@
 
 - Học cách sử dụng SES của AWS
 
+- Nó vẫn phải được Identities - đã được AWS Identities
+
 ## WebSocket
 
 ## Swagger
