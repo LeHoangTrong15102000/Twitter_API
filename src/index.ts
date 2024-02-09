@@ -18,6 +18,9 @@ import searchRouter from './routes/search.routes'
 import conversationsRouter from './routes/conversations.routes'
 import { envConfig } from './constants/config'
 
+import { createServer } from 'http'
+import { Server } from 'socket.io'
+
 config()
 
 databaseService.connect().then(() => {
@@ -29,6 +32,7 @@ databaseService.connect().then(() => {
 })
 
 const app = express()
+const httpServer = createServer(app)
 const port = process.env.PORT || 8000
 
 // Tạo folder Upload
@@ -49,29 +53,22 @@ app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
 
 app.use(defaultErrorHandler)
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+const io = new Server(httpServer, {
+  cors: {
+    origin: 'http://localhost:3000'
+  }
 })
 
-// const mgclient = new MongoClient(
-//   `mongodb+srv://${envConfig.dbUsername}:${envConfig.dbPassword}@cluster0.jzb6290.mongodb.net/?retryWrites=true&w=majority`
-// )
+io.on('connection', (socket) => {
+  console.log('Check socket', socket.id)
+  socket.on('disconnect', () => {
+    console.log(`Socket ${socket.id} disconnected`)
+  })
+})
 
-// const db = mgclient.db('earth')
-// const users = db.collection('users')
-// const usersData = []
-// function getRandomNumber() {
-//   return Math.floor(Math.random() * 100) + 1
-// }
-
-// for (let i = 0; i < 1000; i++) {
-//   usersData.push({
-//     name: 'user' + (i + 1),
-//     age: getRandomNumber(),
-//     sex: i % 2 === 0 ? 'male' : 'female'
-//   })
-// }
-// users.insertMany(usersData)
+httpServer.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
 
 exitHook(() => {
   databaseService.disconnect()

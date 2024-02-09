@@ -15,4 +15,10 @@
 
 ## WebSocket
 
+- Socket.io là thư viện javascript cho phép chúng ta sử dụng websocket trong các ứng dụng web của minh
+
+- Công dụng lớn nhất của socket.io là đơn giản hóa việc sử dụng websocket, việc thứ 2 là tăng độ tin cậy khi chúng ta sử dụng websocket
+
+- Khi mà trình duyệt không hỗ trợ websocket thì thằng socket.io này hỗ trợ cái `fallback(cơ chế dữ phòng)` nếu như mà không có websocket thì nó sẽ chuyển sang một cái cơ chế khác đó là `HTTP-long-polling` để đảm bảo với những cái trình duyệt không hỗ trợ websocket
+
 ## Swagger
