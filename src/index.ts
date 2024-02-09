@@ -64,6 +64,10 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log(`Socket ${socket.id} disconnected`)
   })
+
+  socket.on('hello', (agr) => {
+    console.log(agr)
+  })
 })
 
 httpServer.listen(port, () => {

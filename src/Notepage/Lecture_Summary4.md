@@ -21,4 +21,6 @@
 
 - Khi mà trình duyệt không hỗ trợ websocket thì thằng socket.io này hỗ trợ cái `fallback(cơ chế dữ phòng)` nếu như mà không có websocket thì nó sẽ chuyển sang một cái cơ chế khác đó là `HTTP-long-polling` để đảm bảo với những cái trình duyệt không hỗ trợ websocket
 
+- Hàm `emit` trong `socket.io` là method cực kì quan trọng của `socketio`
+
 ## Swagger
