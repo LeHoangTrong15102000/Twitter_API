@@ -10,6 +10,9 @@
 
 - Nó vẫn phải được Identities - đã được AWS Identities
 
+- Effective typescript
+  -> `https://books-library.net/files/books-library.net-10121732Pl7G6.pdf`
+
 ## WebSocket
 
 ## Swagger

@@ -11,6 +11,7 @@ import RefreshToken from '~/models/schemas/RefreshToken.schema'
 import User from '~/models/schemas/User.schema'
 import databaseService from '~/services/database.services'
 import { hashPassword } from '~/utils/crypto'
+import { sendForgotPasswordEmail, sendVerifyRegisterEmail } from '~/utils/email'
 import { signToken, verifyToken } from '~/utils/jwt'
 
 class UsersService {
@@ -127,9 +128,13 @@ class UsersService {
         exp
       })
     )
-
-    // console.log('Checkkk email verify token >>>> ', email_verify_token)
-    // Chỗ này có thể tạo một cái `Req` là refresh_token_register để khi mà user verify rồi thì xóa cái refresh_token cũ
+    // Flow verify email
+    // 1. Server send email to user
+    // 2. User click link in email
+    // 3. Client send request to server with email_verify_token
+    // 4. Server verify email_verify_token
+    // 5. Client receive access_token and refresh_token
+    await sendVerifyRegisterEmail(payload.email, email_verify_token)
 
     return {
       access_token,
@@ -341,6 +346,7 @@ class UsersService {
       verify: UserVerifyStatus.Unverified
     })
     // await sendVerifyRegisterEmail(email, email_verify_token) // Sẽ thực hiện gửi email ngay tại đây
+    await sendVerifyRegisterEmail(email, email_verify_token)
 
     // Cập nhật lại giá trị  email_verify_token trong document user
     await databaseService.users.updateOne(
@@ -373,9 +379,9 @@ class UsersService {
         }
       }
     ])
-    // await sendForgotPasswordEmail(email, forgot_password_token)
     // Gửi đường link đến email người dùng https://twitter.com/forgot-password?token=token
-    console.log('Check forgot password token >>>>', forgot_password_token)
+    await sendForgotPasswordEmail(email, forgot_password_token)
+    // console.log('Check forgot password token >>>>', forgot_password_token)
     return {
       message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD
     }
