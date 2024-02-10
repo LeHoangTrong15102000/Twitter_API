@@ -33,4 +33,10 @@
 
   - Đó là cái luồng chạy của `socket.io` ở `client` và `server`
 
+### Private Message giữa 2 người
+
+- Thì khi chat giữa 2 người thì cần có `id_user` của người đó thì cả 2 mới có thể chat qua lại được
+
+-Khi mà mình kết nối tới socket.io thì cần gửi định danh của mình lên trên server để server nó lưu vào trong socket rằng là - à thằng này có cái `username` là gì gì đấy và có cái `socketId` là gì gì đấy -> để cho người khác nhắn tin người khác còn biết được
+
 ## Swagger

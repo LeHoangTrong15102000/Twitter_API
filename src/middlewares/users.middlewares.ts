@@ -278,7 +278,7 @@ export const accessTokenValidator = validate(
       Authorization: {
         custom: {
           options: async (value: string, { req }) => {
-            // .replace("Bearer ", ''), undefined .split thì nó sẽ bị lỗi, nếu là undefined thì sẽ lấy chuỗi rỗng
+            // .replace("Bearer ", ''), undefined .split thì nó sẽ bị lỗi, nếu là undefined, hoặc là null thì sẽ lấy chuỗi rỗng
             const access_token = (value ?? '').split(' ')[1]
             return verifyAccessToken(access_token, req as Request)
           }
