@@ -3,6 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import argv from 'minimist'
 const options = argv(process.argv.slice(2))
+console.log(options)
 
 config()
 

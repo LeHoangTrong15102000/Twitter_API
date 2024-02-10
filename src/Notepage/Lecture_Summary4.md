@@ -23,4 +23,14 @@
 
 - Hàm `emit` trong `socket.io` là method cực kì quan trọng của `socketio`
 
+- Cả server và client đều có thể emit sự kiện -> Để những ai nhận được thì sẽ nhận sự kiện đó
+
+- Khi mà client kết nối thành công thì nó sẽ gọi tới callback socket của server -> Chỉ cần một cái thằng nào đó kết nối thì cái `socket callback` của server sẽ được gọi
+
+  - Khi mà cái callback socket được gọi thì cái `socket.emit()` bên trong nó sẽ được gọi
+
+  - Khi mà `socket.emit()` nó được gọi thì bên client sẽ nhận được bầng cách lắng nghe sự kiện đó
+
+  - Đó là cái luồng chạy của `socket.io` ở `client` và `server`
+
 ## Swagger

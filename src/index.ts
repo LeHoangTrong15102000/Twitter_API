@@ -7,6 +7,7 @@ import { defaultErrorHandler } from './middlewares/error.middlewares'
 import mediasRouter from './routes/medias.routes'
 import { config } from 'dotenv'
 import { initFolder } from './utils/file'
+import cors, { CorsOptions } from 'cors'
 import path from 'path'
 import staticRouter from './routes/static.routes'
 import { MongoClient, ObjectId } from 'mongodb'
@@ -16,10 +17,11 @@ import bookmarksRouter from './routes/bookmarks.routes'
 import likesRouter from './routes/likes.routes'
 import searchRouter from './routes/search.routes'
 import conversationsRouter from './routes/conversations.routes'
-import { envConfig } from './constants/config'
+import { envConfig, isProduction } from './constants/config'
 
 import { createServer } from 'http'
 import { Server } from 'socket.io'
+import { hashPassword } from './utils/crypto'
 
 config()
 
@@ -33,7 +35,12 @@ databaseService.connect().then(() => {
 
 const app = express()
 const httpServer = createServer(app)
-const port = process.env.PORT || 8000
+
+const corsOptions: CorsOptions = {
+  origin: isProduction ? envConfig.clientUrl : '*'
+}
+app.use(cors(corsOptions))
+const port = envConfig.port
 
 // Tạo folder Upload
 initFolder()
@@ -67,6 +74,13 @@ io.on('connection', (socket) => {
 
   socket.on('hello', (agr) => {
     console.log(agr)
+  })
+
+  socket.emit('hi', {
+    name: 'Le Hoang Trong',
+    age: 26,
+    gender: 'male',
+    profession: 'Developer'
   })
 })
 
