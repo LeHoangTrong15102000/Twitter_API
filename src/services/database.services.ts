@@ -9,6 +9,8 @@ import Like from '~/models/schemas/Like.schema'
 import Hashtag from '~/models/schemas/Hashtag.schema'
 import VideoStatus from '~/models/schemas/VideoStatus.schema'
 import Bookmark from '~/models/schemas/Bookmark.schema'
+import Conversation from '~/models/schemas/Conversations.schema'
+import { indexOf } from 'lodash'
 
 config() // lấy thằng config() để có thể sử dụng được thằng env
 const uri = `mongodb+srv://${envConfig.dbUsername}:${envConfig.dbPassword}@cluster0.jzb6290.mongodb.net/?retryWrites=true&w=majority`
@@ -123,6 +125,10 @@ class DatabaseService {
 
   get bookmarks(): Collection<Bookmark> {
     return this.db.collection(envConfig.dbBookmarksCollection)
+  }
+
+  get conversations(): Collection<Conversation> {
+    return this.db.collection(envConfig.dbConversationCollection)
   }
 }
 

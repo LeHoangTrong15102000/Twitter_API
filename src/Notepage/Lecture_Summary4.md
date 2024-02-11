@@ -37,6 +37,8 @@
 
 - Thì khi chat giữa 2 người thì cần có `id_user` của người đó thì cả 2 mới có thể chat qua lại được
 
--Khi mà mình kết nối tới socket.io thì cần gửi định danh của mình lên trên server để server nó lưu vào trong socket rằng là - à thằng này có cái `username` là gì gì đấy và có cái `socketId` là gì gì đấy -> để cho người khác nhắn tin người khác còn biết được
+- Khi mà mình kết nối tới socket.io thì cần gửi định danh của mình lên trên server để server nó lưu vào trong socket rằng là - à thằng này có cái `username` là gì gì đấy và có cái `socketId` là gì gì đấy -> để cho người khác nhắn tin người khác còn biết được
+
+- Khi mà handleSubmit thì cần emit sự kiện lên phía `server` -> Trước khi connect thì cần gửi thông tin lên server biết được là thằng vừa kết nối là thằng nào truyền vào cái `auth`
 
 ## Swagger
