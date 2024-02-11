@@ -39,6 +39,20 @@
 
 - Khi mà mình kết nối tới socket.io thì cần gửi định danh của mình lên trên server để server nó lưu vào trong socket rằng là - à thằng này có cái `username` là gì gì đấy và có cái `socketId` là gì gì đấy -> để cho người khác nhắn tin người khác còn biết được
 
-- Khi mà handleSubmit thì cần emit sự kiện lên phía `server` -> Trước khi connect thì cần gửi thông tin lên server biết được là thằng vừa kết nối là thằng nào truyền vào cái `auth`
+- Khi mà handleSubmit thì cần emit sự kiện lên phía `server` -> Trước khi connect thì cần gửi thông tin lên server biết được là thằng vừa kết nối là thằng nào truyền vào cái `auth` -> Client đã gửi lên `id` thì trên server làm sao để có thể nhận được cái `_id` từ client gửi lên
+
+- 2 thằng kết nối và 2 thằng đều truyền `access_token` lên trên `server`
+
+  - Tạo một cái `users` nâng cao thì nó dùng `new Map()` thì nó sẽ tối ưu `performance` còn chúng ta thì chỉ cần dùng `object` bình thường thôi là được
+
+  - Tại sao chúng ta không lưu trực tiếp thằng `socket_id` vào `_id` của users luôn mà phải lưu thông qua `object` là `access_token`: `{ socket_id: _id }` -> Vì trong tương lai nếu có thêm vào thông tin gì thêm thì chúng ta chỉ cần thêm vào không cần phải thay đổi cấu trúc làm gì
+
+- Khi mà socket client 1 bắt một cái sự kiện thì socket trên server của client 1 sẽ lắng nghe sự kiện, chứ socket-Client2 trên server có lắng nghe được `private message` cũng không có nhận được
+
+  - Khi nào mà `socket-client-2` kết nối vào thì cái `callback function` trên server sẽ gọi lần tiếp theo và tạo ra một cái `instance` mới cho `socket-client-2` - và nó cũng lắng nghe sự kiện `private message` - Nhưng mà `socket-client-2` lắng nghe cũng không có nhiều ý nghĩa gì, chỉ có `socket-client-1` lắng nghe thì mới có ý nghĩa.
+
+  - 2 cái socket-client đều lắng nghe - nhưng chỉ có một socket-client trên server là nhận được
+
+  - Bây giờ thì `socket-client-1` trên server đã lắng nghe được rồi -> Bây giờ sẽ thực hiện gửi tin nhắn cho `socket-client-2` -> Thì gửi như thế nào thì chúng ta sẽ thực hiện như sau
 
 ## Swagger

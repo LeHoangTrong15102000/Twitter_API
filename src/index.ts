@@ -66,21 +66,29 @@ const io = new Server(httpServer, {
   }
 })
 
+const users: {
+  [key: string]: {
+    socket_id: string
+  }
+} = {}
 io.on('connection', (socket) => {
   console.log('Check socket', socket.id)
+  const user_id = socket.handshake.auth._id
+  users[user_id] = {
+    socket_id: socket.id
+  }
+
+  socket.on('private message', (data) => {
+    const receiver_socket_id = users[data.to].socket_id // lấy được socket_id của người nhận
+    // Rồi mình sẽ gửi đến người nhận đấy cái thông báo mà bên kia nhắn qua, phải emit một sự kiện mới là receive private message
+    socket.to(receiver_socket_id).emit('receive private message', {
+      content: data.content,
+      from: user_id
+    })
+  })
   socket.on('disconnect', () => {
+    delete users[user_id]
     console.log(`Socket ${socket.id} disconnected`)
-  })
-
-  socket.on('hello', (agr) => {
-    console.log(agr)
-  })
-
-  socket.emit('hi', {
-    name: 'Le Hoang Trong',
-    age: 26,
-    gender: 'male',
-    profession: 'Developer'
   })
 })
 
