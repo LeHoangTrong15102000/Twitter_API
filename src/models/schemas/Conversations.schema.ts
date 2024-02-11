@@ -2,12 +2,14 @@ import { ObjectId } from 'mongodb'
 
 interface ConversationType {
   _id?: ObjectId
-  sender_id: ObjectId
-  receiver_id: ObjectId
+  sender_id: ObjectId // id người gửi
+  receiver_id: ObjectId // id người nhận
   content: string
   created_at?: Date
   updated_at?: Date
 }
+
+// Thiết kế conversation để mà lưu cái data chat này
 export default class Conversation {
   _id?: ObjectId
   sender_id: ObjectId
@@ -17,7 +19,7 @@ export default class Conversation {
   updated_at: Date
   constructor({ _id, sender_id, receiver_id, content, created_at, updated_at }: ConversationType) {
     const date = new Date()
-    this._id = _id
+    this._id = _id // Nếu _id là undefinded thì tự động MongoDB tự tạo cho chúng ta
     this.sender_id = sender_id
     this.receiver_id = receiver_id
     this.content = content

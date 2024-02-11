@@ -61,11 +61,37 @@
 
 - Gửi thì set `isSender` là true còn người nhận thì set `isSender` là false chỉ đơn giản có thể thôi
 
+- Khi mà chúng ta lưu lại bên phía React nó sẽ sử dụng 1 cái gọi là hot reload -> Nghĩa là nó không có F5 lại hoàn toàn mà nó sẽ giữ nguyên trạng thái lúc nảy - mà nó sẽ kết nối lại một cái kết nối mới -> Nên vì thế khi mà giữ nguyên trạng thái lúc nảy và kết nối lại kết nối mới thì cái `tin nhắn` gần nhất nó sẽ `được thêm vào` mỗi khi mà chúng ta `nhấn lưu`
+
+- Khi mà lưu lại thì thằng socket-client nó sẽ bắn l ên server một tín hiệu và cái `callbackfunction` trong event `connection` nó sẽ chạy lại và tạo một cái `instance` mới
+
 ### Nhắn tin qua lại giữa 2 người
+
+- App của chúng ta chỉ đang có thể chat được một chiều mà thôi -> Do chúng ta đang set cứng ứng dụng của người nhận
+
+- Bài toàn của chúng ta là làm sao để có thể nhắn qua lại giữa 2 người đều có thể nhận được cả
+
+  - Bình thường khi mà chúng ta muốn nhắn tin với 1 người nào đấy thì chúng ta cần có `user_id` của người đấy
+
+  - Nên chúng ta sẽ giả sử có được username của người đó
+
+  - Thì chúng ta đang làm hơi thủ công một tí xíu nhưng mà nó vẫn hoạt động được
+
+  - Nếu chúng ta gửi vào người không tồn tại thì nó sẽ thông báo lỗi -> Nếu mà chúng ta không nhấn vào `user1` mà chúng ta gửi tin nhắn đi thì nó sẽ bị lỗi -> lỗi này chúng ta sẽ fix sau
 
 ### Thiết kế conversations schema
 
+- Có một cái vấn đề khi mà chat giữa 2 người là đó là khi mà F5 lại thì nó biến mất -> Đó là do chúng ta chưa lưu data ở `database`
+
+- Với cái quan hệ một rất nhiều -> Thì chúng ta sẽ tạo một cái `conversation Collection` liên kết với `user` bằng cách tham chiếu cái `conversation_id` vào collection của `user`
+
+- Trước khi mà `emit` một cái sự kiện thì chúng sẽ lưu vào database thông tin của cuộc hội thoại đó
+
 ### Code route get conversations
+
+- Khi mà người gửi bắt đầu
+
+-
 
 ### Apply API get conversations vào client chat
 
