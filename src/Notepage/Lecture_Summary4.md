@@ -55,4 +55,26 @@
 
   - Bây giờ thì `socket-client-1` trên server đã lắng nghe được rồi -> Bây giờ sẽ thực hiện gửi tin nhắn cho `socket-client-2` -> Thì gửi như thế nào thì chúng ta sẽ thực hiện như sau
 
+### CSS chia ra người gửi và người nhận trong chat
+
+- State `messages` cần phải update lại xíu nữa -> Sẽ đưa nó thành một cái object để thêm vào đó là tin nhắn của người gửi hay người nhận nữa
+
+- Gửi thì set `isSender` là true còn người nhận thì set `isSender` là false chỉ đơn giản có thể thôi
+
+### Nhắn tin qua lại giữa 2 người
+
+### Thiết kế conversations schema
+
+### Code route get conversations
+
+### Apply API get conversations vào client chat
+
+### Cập nhật validator cho route get conversations
+
+### Code infinite scroll cho React
+
+### Debug websocket trên chrome
+
+### Middleware Server Instance
+
 ## Swagger

@@ -21,7 +21,6 @@ import { envConfig, isProduction } from './constants/config'
 
 import { createServer } from 'http'
 import { Server } from 'socket.io'
-import { hashPassword } from './utils/crypto'
 
 config()
 
