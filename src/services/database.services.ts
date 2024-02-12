@@ -90,6 +90,14 @@ class DatabaseService {
     }
   }
 
+  async indexConversations() {
+    const isExists = await this.conversations.indexExists(['sender_id_1_receiver_id_1'])
+
+    if (!isExists) {
+      this.conversations.createIndex({ sender_id: 1, receiver_id: 1 })
+    }
+  }
+
   async disconnect() {
     await this.client.close()
   }

@@ -91,7 +91,23 @@
 
 - Khi mà người gửi bắt đầu
 
--
+- get list tin nhắn giữa chúng ta và người khác thì chúng ta dùng method là `GET`
+
+  - Lấy thông tin người gửi và người nhận thì chúng ta cần lấy thông tin `sender_id` và `receiver_id` chứ chúng ta không thể lấy `_id` của đoạn hội thọai vì nó chỉ chứa thông tin của một đoạn hội thoại mà thôi
+
+  - Khi chúng ta get list thì chúng ta muốn là có tin nhắn thằng 1 gửi cho thằng 2 và cả tin nhắn thằng 2 gửi lại cho thằng 1 luôn.
+
+- Khi mà `get conversations` thì chúng ta muốn lấy ra tin nhắn của cả 2 phía người gửi -> Nên là ở logic `conversations services` chúng ta sẽ chỉnh sửa nó lại một tí xíu
+
+  - Sẽ dùng toán tử `$or` trong mongoDB -> `$or` nhận vào một cái `Array` và chúng ta truyền vào `điều kiện thứ 1` và `điều kiện thứ 2`
+
+- Sau khi đã `get conversations` của cả 2 người rồi thì chúng ta sẽ tiến hành phân trang luôn cho nó
+
+  - Khi mà chúng ta nhắn tin với một người nào đó thì khi lướt đến đâu thì chúng ta sẽ load đến đó -> Đó là dùng kĩ thuật `infinite scroll` -> Vì tin nhắn thì nó rất là nhiều chúng ta không thể trả hết tin nhắn về cho người dùng được
+
+  - limit và page khi mà lấy từ query ra nó sẽ là `string` hoặc là `undefined` nên là chúng ta phải convert nó sang Number
+
+  - Khi tìm với `find` thông thường thì nhớ `toArray()`
 
 ### Apply API get conversations vào client chat
 

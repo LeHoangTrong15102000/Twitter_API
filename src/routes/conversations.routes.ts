@@ -6,12 +6,13 @@ import { wrapRequestHandler } from '~/utils/handlers'
 
 const conversationsRouter = Router()
 
+// Nên đặt tên như này cho nó tường minh
 conversationsRouter.get(
   '/receivers/:receiver_id',
   accessTokenValidator,
   verifiedUserValidator,
-  paginationValidator,
-  getConversationsValidator,
+  // paginationValidator,
+  // getConversationsValidator,
   wrapRequestHandler(getConversationController)
 )
 

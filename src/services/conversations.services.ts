@@ -13,6 +13,7 @@ class ConversationService {
     limit: number
     page: number
   }) {
+    // Khi mà dùng toán tử $or thì nó sẽ tìm kiếm các document theo cả 2 điều kiện
     const match = {
       $or: [
         {
@@ -25,6 +26,7 @@ class ConversationService {
         }
       ]
     }
+    // Mặc định 1 là thấp đến cao(created_at)
     const conversations = await databaseService.conversations
       .find(match)
       .sort({ created_at: -1 })

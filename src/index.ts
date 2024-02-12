@@ -31,6 +31,7 @@ databaseService.connect().then(() => {
   // databaseService.indexVideoStatus()
   databaseService.indexFollowers()
   // databaseService.indexTweets()
+  databaseService.indexConversations()
 })
 
 const app = express()
@@ -87,8 +88,8 @@ io.on('connection', (socket) => {
     // Thực hiện insertOne xon thì emit sự kiện để bên kia nhận được
     await databaseService.conversations.insertOne(
       new Conversation({
-        sender_id: data.from,
-        receiver_id: data.to,
+        sender_id: new ObjectId(data.from),
+        receiver_id: new ObjectId(data.to),
         content: data.content
       })
     )
