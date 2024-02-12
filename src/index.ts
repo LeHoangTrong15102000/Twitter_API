@@ -80,23 +80,24 @@ io.on('connection', (socket) => {
     socket_id: socket.id
   }
 
-  socket.on('private message', async (data) => {
+  socket.on('send_message', async (data) => {
+    const { receiver_id, sender_id, content } = data.payload
     // Khi client-2 kết nối thì cái callback(socket) nó cũng sẽ tạo ra một socket_id-2
-    const receiver_socket_id = users[data.to]?.socket_id // lấy được socket_id của người nhận
+    const receiver_socket_id = users[receiver_id]?.socket_id // lấy được socket_id của người nhận
     if (!receiver_socket_id) return
 
+    const conversation = new Conversation({
+      sender_id: new ObjectId(sender_id),
+      receiver_id: new ObjectId(receiver_id),
+      content
+    })
     // Thực hiện insertOne xon thì emit sự kiện để bên kia nhận được
-    await databaseService.conversations.insertOne(
-      new Conversation({
-        sender_id: new ObjectId(data.from),
-        receiver_id: new ObjectId(data.to),
-        content: data.content
-      })
-    )
+    const result = await databaseService.conversations.insertOne(conversation)
+    // gán _id cho cái conversation
+    conversation._id = result.insertedId
     // Rồi mình sẽ gửi đến người nhận đấy cái thông báo mà bên kia nhắn qua, phải emit một sự kiện mới là receive private message
-    socket.to(receiver_socket_id).emit('receive private message', {
-      content: data.content,
-      from: user_id
+    socket.to(receiver_socket_id).emit('receive_message', {
+      payload: conversation
     })
   })
   socket.on('disconnect', () => {

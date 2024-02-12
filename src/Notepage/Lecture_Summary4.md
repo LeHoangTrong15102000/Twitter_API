@@ -111,6 +111,22 @@
 
 ### Apply API get conversations vào client chat
 
+- Chỉ emit content không thì vẫn không đủ nên `emit` cả cục vừa mới insert vào bên trong `conversations collection`
+
+  - Không cần phải dùng find() để tìm ra cái `conversations` vừa mới insert vào mà chúng ta có thể dùng `insertId` mà cái MongoDB trả lại khi mà chúng ta thêm `conversations` vào `database`
+
+  - Sau khi lấy được insertId rồi chúng ta có thể dựa vào `insertId` để lấy ra data vừa được đưa vào database xong rồi chúng ta sẽ tạo một cái object để bắn lại cho người nhận
+
+  - Và cái `object` đấy cũng cần phải có cái `date()` -> Thì cái `date()` chúng ta cũng đã có sẵn khi mà chúng ta tạo `conversations collections` rồi
+
+  - Sửa lại biến content thành payload cho nó tường minh một chút -> Sẽ chuẩn hóa nó lại một chút
+
+  - Vì ở dưới chúng ta có dùng `_id` làm `indexKey` nên là chúng ta cần phải tạo ra một cái `_id` lúc gửi tin nhắn
+
+  - Khi mà dùng `created_at: -1` thì tin hội thoại mới nhất nó sẽ nằm bên dưới và ứng với mảng `array conversations` bên FE thì tin mới nhất sẽ là phần tử đầu tiên
+
+  - Hiện tại đang set cứng cái limit và page trong vài cái video tới thì chúng ta sẽ set động tới 2 biến `Limit` và `Page` -> Sẽ sử dụng kỹ thuật là `Infinite Scroll` vào `Frontend`
+
 ### Cập nhật validator cho route get conversations
 
 ### Code infinite scroll cho React

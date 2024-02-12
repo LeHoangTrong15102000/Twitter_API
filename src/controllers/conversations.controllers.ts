@@ -1,9 +1,8 @@
-// Viết Converstions Controller
-
 import { Request, Response } from 'express'
 import { GetConversationsParams } from '~/models/requests/Conversation.requests'
 import conversationService from '~/services/conversations.services'
 
+// Viết Converstions Controller
 export const getConversationController = async (req: Request<GetConversationsParams>, res: Response) => {
   const { receiver_id } = req.params
   const limit = Number(req.query.limit)
