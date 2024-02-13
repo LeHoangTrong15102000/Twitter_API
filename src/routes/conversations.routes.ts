@@ -11,8 +11,8 @@ conversationsRouter.get(
   '/receivers/:receiver_id',
   accessTokenValidator,
   verifiedUserValidator,
-  // paginationValidator,
-  // getConversationsValidator,
+  paginationValidator,
+  getConversationsValidator,
   wrapRequestHandler(getConversationController)
 )
 

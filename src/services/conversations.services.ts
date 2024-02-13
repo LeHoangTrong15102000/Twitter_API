@@ -27,6 +27,7 @@ class ConversationService {
       ]
     }
     // Mặc định 1 là thấp đến cao(created_at)
+    // sort theo thời gian giảm dần, nghĩa là conversations sẽ từ cái mới nhất cho tới cái cũ nhất
     const conversations = await databaseService.conversations
       .find(match)
       .sort({ created_at: -1 })

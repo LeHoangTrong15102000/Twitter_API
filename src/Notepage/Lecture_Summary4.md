@@ -129,10 +129,23 @@
 
 ### Cập nhật validator cho route get conversations
 
+- Cần phải check được `receiver_id` có phải là `user_id` hay không
+
 ### Code infinite scroll cho React
 
 ### Debug websocket trên chrome
 
+- Để xem chúng ta có thực sự gửi dữ liệu lên server hay không -> Cái này nó liên quan đề FE một tí xíu
+  - Nhưng mà làm BE đôi lúc cũng phải test cũng phải `handle`
+
 ### Middleware Server Instance
+
+- Thực hiện `middleware server instance` -> thằng midleware này nó sẽ thực thi mỗi khi mà có kết nối tới server của chúng ta
+
+### Fix lỗi Disconnect trên chrome ẩn danh
+
+### Middleware cho socket
+
+### Refactor socket server
 
 ## Swagger

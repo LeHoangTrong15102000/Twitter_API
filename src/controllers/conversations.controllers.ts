@@ -18,7 +18,7 @@ export const getConversationController = async (req: Request<GetConversationsPar
     result: {
       limit,
       page,
-      total_range: Math.ceil(result.total / limit),
+      total_page: Math.ceil(result.total / limit),
       conversations: result.conversations
     },
     message: 'Get conversations successfully'
