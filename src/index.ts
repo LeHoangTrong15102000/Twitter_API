@@ -22,6 +22,7 @@ import { envConfig, isProduction } from './constants/config'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import Conversation from './models/schemas/Conversations.schema'
+import { verifyAccessToken } from './utils/commons'
 
 config()
 
@@ -73,6 +74,22 @@ const users: {
   }
 } = {}
 
+io.use(async (socket, next) => {
+  // Middlewares
+  const Authorization = socket.handshake.auth.Authorization
+  const access_token = Authorization?.split(' ')[1]
+  try {
+    await verifyAccessToken(access_token)
+  } catch (error) {
+    console.log(error)
+    // Do nó kế thừa từ Object Error mặc định
+    next({
+      message: 'Unauthorized',
+      name: 'UnauthorizedError',
+      data: error
+    })
+  }
+})
 io.on('connection', (socket) => {
   console.log('Check socket', socket.id)
   const user_id = socket.handshake.auth._id

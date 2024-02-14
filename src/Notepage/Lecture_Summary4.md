@@ -140,7 +140,23 @@
 
 ### Middleware Server Instance
 
+- Để xem người dùng có quyền hạn truy cập vào server của chúng ta xem người ta có quyền hạn truy cập vào server của chúng ta hay không
+
 - Thực hiện `middleware server instance` -> thằng midleware này nó sẽ thực thi mỗi khi mà có kết nối tới server của chúng ta
+
+  - Là middleware function nó sẽ thực thi mỗi khi có kết nối tới server của chúng ta
+
+  - Rất là hữu ích trong việc Logging, Authentication, Authorization, Rate limiting
+
+  - const io = new Server => Thì thằng io này được gọi là server instance
+
+  - Khi mà chúng ta dùng io.use thì được gọi là đăng kí một cái middleware -> Và cái `callback` bên trong là một `middleware`
+
+  - `middleware` thì nó sẽ chạy trước khi mà chúng ta kết nối -> Nên là khi mà chúng ta chưa kết nối mà đã xuất ra lỗi thì những hàm bên trong `connect` nó sẽ không chạy
+
+  - Khi mà chưa kết nối thành công mà xuất ra cái lỗi thì nó sẽ có một sự kiện là `connect_error` -> Cái server của chúng ta sẽ tự động `emit` một cái sự kiện là `connect_error` -> thì lúc này thằng client nó sẽ lắng nghe cái sự kiện là `connect_error`
+
+- Bây giờ chúng ta sẽ tạo một cái middleware check `access_token` để coi thử là cái người mà kết nối tới server của chúng ta người ta có truyền `access_token` vào để chúng ta check hay không -> Gần giống như check của thằng `accessTokenValidator`
 
 ### Fix lỗi Disconnect trên chrome ẩn danh
 
