@@ -158,6 +158,18 @@
 
 - Bây giờ chúng ta sẽ tạo một cái middleware check `access_token` để coi thử là cái người mà kết nối tới server của chúng ta người ta có truyền `access_token` vào để chúng ta check hay không -> Gần giống như check của thằng `accessTokenValidator`
 
+- Khi mà Middleware mà nó lỗi thì nó chưa có `connect` => Nên là chúng ta lắng nghe lỗi bên trong `callback` của event `connection` sẽ không được -> Vì chưa connect thì nó không có nhảy vào cái `callback` bên trong -> Nên là chúng ta sẽ lắng nghe lỗi ở trong `middlware` của `socketio`
+
+- `Connect_error` chỉ lắng nghe trên `client` còn trên `server` thì không có lắng nghe được
+
+  - Middleware hiện tại của thằng `socket` thì không có req để mà truyền `decoded_authorization` vào
+
+- Chia sẽ một vài cái lưu ý nhỏ nữa là thằng socketIO middleware thì nó cũng tương thích với `Express middleware` có nghĩa là chúng ta có thể sử dụng `callback function với (req,res, next)` tương tự như bên `request handler` của `expressjs`
+
+  - Với lưu ý nữa là khi mà chúng ta `next()` một cái lỗi thì chúng ta phải `next()` theo cái kiểu mà `socketio` nó `recommend` cho chúng ta
+
+- Nếu mà chạy vào try() nếu không có lỗi thì chúng ta cần phải next() cho nó tới cái `middleware` tiếp theo hoặc là cho nó tiếp túc `connection`
+
 ### Fix lỗi Disconnect trên chrome ẩn danh
 
 ### Middleware cho socket

@@ -23,6 +23,11 @@ import { createServer } from 'http'
 import { Server } from 'socket.io'
 import Conversation from './models/schemas/Conversations.schema'
 import { verifyAccessToken } from './utils/commons'
+import { TokenPayload } from './models/requests/User.requests'
+import { UserVerifyStatus } from './constants/enums'
+import { ErrorWithStatus } from './models/Errors'
+import { USERS_MESSAGES } from './constants/messages'
+import HTTP_STATUS from './constants/httpStatus'
 
 config()
 
@@ -79,7 +84,19 @@ io.use(async (socket, next) => {
   const Authorization = socket.handshake.auth.Authorization
   const access_token = Authorization?.split(' ')[1]
   try {
-    await verifyAccessToken(access_token)
+    const decoded_authorization = await verifyAccessToken(access_token)
+    const { verify } = decoded_authorization as TokenPayload
+    if (verify !== UserVerifyStatus.Verified) {
+      // next(err) trong cái function bth
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_NOT_VERIFIED,
+        status: HTTP_STATUS.FORBIDDEN
+      })
+    }
+    // Truyền decoded_authorization vào socket để sử dụng ở các middleware khác(mutate cái auth trong handshake)
+    socket.handshake.auth.decoded_authorization = decoded_authorization
+    next()
+    // Khi mà  mình  throw cái lỗi thì nó sẽ nhảy tới thằng catch() thì thằng catch() sẽ next(err) đó cho mình
   } catch (error) {
     console.log(error)
     // Do nó kế thừa từ Object Error mặc định
@@ -92,7 +109,7 @@ io.use(async (socket, next) => {
 })
 io.on('connection', (socket) => {
   console.log('Check socket', socket.id)
-  const user_id = socket.handshake.auth._id
+  const { user_id } = socket.handshake.auth.decoded_authorization as TokenPayload
   users[user_id] = {
     socket_id: socket.id
   }
@@ -101,7 +118,7 @@ io.on('connection', (socket) => {
     const { receiver_id, sender_id, content } = data.payload
     // Khi client-2 kết nối thì cái callback(socket) nó cũng sẽ tạo ra một socket_id-2
     const receiver_socket_id = users[receiver_id]?.socket_id // lấy được socket_id của người nhận
-    if (!receiver_socket_id) return
+    // if (!receiver_socket_id) return
 
     const conversation = new Conversation({
       sender_id: new ObjectId(sender_id),
@@ -113,9 +130,12 @@ io.on('connection', (socket) => {
     // gán _id cho cái conversation
     conversation._id = result.insertedId
     // Rồi mình sẽ gửi đến người nhận đấy cái thông báo mà bên kia nhắn qua, phải emit một sự kiện mới là receive private message
-    socket.to(receiver_socket_id).emit('receive_message', {
-      payload: conversation
-    })
+    if (receiver_socket_id) {
+      // nếu mà có receiver_socket_id thì mới gửi tin qua
+      socket.to(receiver_socket_id).emit('receive_message', {
+        payload: conversation
+      })
+    }
   })
   socket.on('disconnect', () => {
     delete users[user_id]
